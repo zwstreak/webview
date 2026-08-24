@@ -1,0 +1,8 @@
+[
+  {
+    "label": "CMake Build",
+    "command": "cmake --build build-win",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "hide": "on_success"
+  }
+]
