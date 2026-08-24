@@ -1,6 +1,6 @@
-#include <Geode/cocos/menu_nodes/CCMenu.h>
-#include "Geode/utils/file.hpp"
 #include <lexbor/html/parser.h>
+#include <Geode/cocos/menu_nodes/CCMenu.h>
+#include <Geode/utils/file.hpp>
 #include <Webview.hpp>
 
 #include <filesystem>
@@ -17,5 +17,5 @@ WEBVIEW_API CCMenu* zwk::Webview::createFromResource(const std::string& resource
         return nullptr;
     }
 
-    return zwk::Webview::create(result.unwrapErr());
+    return zwk::Webview::create(result.unwrapOr("huh"));
 }

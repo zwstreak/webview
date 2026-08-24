@@ -2,6 +2,7 @@
 #include <Geode/binding/CCMenuItemSpriteExtra.hpp>
 #include <Geode/modify/MenuLayer.hpp>
 #include <Geode/modify/CreatorLayer.hpp>
+#include <Webview.hpp>
 using namespace geode::prelude;
 
 #if DEBUG_MODE
@@ -27,7 +28,9 @@ class $modify(MyCreatorLayer, CreatorLayer) {
         back->setPosition({15.0f, menu->getContentSize().height - 15.0f});
         menu->addChild(back);
 
-        // TODO: run the webview here
+        CCMenu* webview = zwk::Webview::create("<p>Hello World!</p>");
+        menu->addChild(webview);
+
         return true;
     }
 

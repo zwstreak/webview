@@ -1,11 +1,12 @@
 #ifndef WEBVIEW_API_HPP
 #define WEBVIEW_API_HPP
-
 #include <Geode/Geode.hpp>
 #include <Geode/cocos/menu_nodes/CCMenu.h>
 using namespace geode::prelude;
 
-#ifdef GEODE_IS_WINDOWS
+#ifdef DEBUG_MODE
+    #define WEBVIEW_API
+#elifdef GEODE_IS_WINDOWS
     #ifdef WEBVIEW_EXPORTING
         #define WEBVIEW_API __declspec(dllexport)
     #else
@@ -23,12 +24,12 @@ $class(Webview, {
     /**
      * Create a new webview from an HTML source code.
      */
-    inline static WEBVIEW_API CCMenu* create(const std::string& source);
+    static WEBVIEW_API CCMenu* create(const std::string& source);
     /*
-     * Read HTML data from a file
-     * @warning can return `nullptr` if the file does not exist.
+     * Read contents of a resource and create a webview from it.
+     * @warning can return `nullptr` if the resource does not exist.
      */
-    inline static WEBVIEW_API CCMenu* createFromResource(const std::string& resource);
+    static WEBVIEW_API CCMenu* createFromResource(const std::string& resource);
 });
 
 #endif
