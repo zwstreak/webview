@@ -1,4 +1,5 @@
 [
+  // RelWithDebInfo by default
   {
     "label": "CMake Build",
     "command": "cmake --build build-win",

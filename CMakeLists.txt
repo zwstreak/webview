@@ -15,6 +15,12 @@ target_link_libraries(${PROJECT_NAME} INTERFACE "$ENV{GEODE_SDK}/bin/win/Geode.l
 ]]
 # because for SOME reason it says to install the binaries EVEN IF i have them??? hello??? (PLEASE fix linux support)
 
+if (CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo" OR CMAKE_CONFIGURATION_TYPES MATCHES "RelWithDebInfo")
+    add_compile_definitions(DEBUG_MODE=1)
+else()
+    add_compile_definitions(DEBUG_MODE=0)
+endif()
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # intellisense
 set(GEODE_TARGET_PLATFORM Win64)
 project(Webview VERSION 1.0.0)
