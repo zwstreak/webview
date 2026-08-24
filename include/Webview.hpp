@@ -20,8 +20,15 @@ using namespace geode::prelude;
 #define $class(name, data) namespace zwk { struct name data; }
 
 $class(Webview, {
+    /**
+     * Create a new webview from an HTML source code.
+     */
     inline static WEBVIEW_API CCMenu* create(const std::string& source);
-    inline static WEBVIEW_API CCMenu* createFromFile(const std::string& resource);
+    /*
+     * Read HTML data from a file
+     * @warning can return `nullptr` if the file does not exist.
+     */
+    inline static WEBVIEW_API CCMenu* createFromResource(const std::string& resource);
 });
 
 #endif
