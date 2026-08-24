@@ -1,4 +1,6 @@
 [
+  // cmake -B build-win -DCMAKE_BUILD_TYPE=RelWithDebInfo
+  // ^^^ should be ran before this task
   // RelWithDebInfo by default
   {
     "label": "CMake Build",
