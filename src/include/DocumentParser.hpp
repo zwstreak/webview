@@ -2,7 +2,16 @@
 #define WEBVIEW_HTML_HPP
 #include <lexbor/html/interfaces/element.h>
 #include <lexbor/html/parser.h>
+#include <vector>
+#include <unordered_map>
 #include <string>
+
+struct Element {
+    std::string tag;
+    std::unordered_map<std::string, std::string> attributes;
+    std::string content;
+    std::vector<Element> children;
+};
 
 class DocumentParser {
 public:
@@ -10,10 +19,12 @@ public:
      * @warning can return nullptr if any errors happen while parsing.
      */
     static DocumentParser* parse(const std::string& content);
+    std::vector<Element> getElements();
     void free();
 private:
     lxb_html_document_t* document;
-    DocumentParser(lxb_html_document_t* document);
+    lxb_dom_node_t* body;
+    DocumentParser(lxb_html_document_t* document, lxb_dom_node_t* body);
 };
 
 #endif

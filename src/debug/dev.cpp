@@ -5,7 +5,7 @@
 #include <Webview.hpp>
 using namespace geode::prelude;
 
-#if DEBUG_MODE
+#if WEBVIEW_DEBUG_MODE
 class $modify(MyCreatorLayer, CreatorLayer) {
     bool init() {
         if (!CreatorLayer::init()) {
@@ -18,6 +18,8 @@ class $modify(MyCreatorLayer, CreatorLayer) {
         menu->setPosition({0, 0});
         this->addChild(menu);
 
+        // yes, the button restarting the game was intentional, press ESC to go back instead
+        // im such an idiot for not putting this comment earlier lmao
         CCMenuItemSpriteExtra* back = CCMenuItemSpriteExtra::create(
             CCSprite::createWithSpriteFrameName("GJ_arrow_01_001.png"),
             this,
@@ -28,7 +30,7 @@ class $modify(MyCreatorLayer, CreatorLayer) {
         back->setPosition({15.0f, menu->getContentSize().height - 15.0f});
         menu->addChild(back);
 
-        CCMenu* webview = zwk::Webview::create("<p>Hello World!</p>");
+        CCMenu* webview = zwk::Webview::create("<html><body><p>Hello</p></body></html>");
         menu->addChild(webview);
 
         return true;

@@ -4,7 +4,7 @@
 #include <Geode/cocos/menu_nodes/CCMenu.h>
 using namespace geode::prelude;
 
-#ifdef DEBUG_MODE
+#ifdef WEBVIEW_DEBUG_MODE
     #define WEBVIEW_API
 #elifdef GEODE_IS_WINDOWS
     #ifdef WEBVIEW_EXPORTING

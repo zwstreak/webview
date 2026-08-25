@@ -10,16 +10,17 @@ endif()
 
 # btw i removed line 403-406 in the CMakeLists.txt file (of the SDK)
 # because for SOME reason it says to install the binaries EVEN IF i have them??? hello??? (PLEASE fix linux support)
+# i use arch btw
 
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(GEODE_TARGET_PLATFORM Win64)
 if (CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo" OR CMAKE_CONFIGURATION_TYPES MATCHES "RelWithDebInfo")
-    add_compile_definitions(DEBUG_MODE=1)
+    add_compile_definitions(WEBVIEW_DEBUG_MODE=1)
 else()
-    add_compile_definitions(DEBUG_MODE=0)
+    add_compile_definitions(WEBVIEW_DEBUG_MODE=0)
 endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # intellisense
-set(GEODE_TARGET_PLATFORM Win64)
 project(Webview VERSION 1.0.0)
 
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
