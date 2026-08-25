@@ -1,4 +1,3 @@
-#include <lexbor/html/parser.h>
 #include <Geode/cocos/menu_nodes/CCMenu.h>
 #include <Geode/utils/file.hpp>
 #include <Webview.hpp>
