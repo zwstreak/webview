@@ -36,5 +36,8 @@ CCMenu* webview = zwk::WebView::createFromResource("index.html");
 **->** zwk means "zwstreak" which is the creator of this mod, I have decided to make it a namespace
    so that it holds all the APIs I make for Geometry Dash.
 
-1. Why is the logo so bad?<br/>
+2. Why is the logo so bad?<br/>
 **->** uhhhh i think that is because i am the only developer of this mod lol (i tried (kinda))
+
+3. Is it free?<br/>
+**->** YES, it will and always be free.

@@ -9,7 +9,6 @@ namespace fs = std::filesystem;
 
 WEBVIEW_API CCMenu* zwk::Webview::create(const std::string& source) {
     DocumentParser* parser = DocumentParser::parse(source);
-    geode::log::info("{}", parser->getElements()[0].tag);
     parser->free();
     return CCMenu::create();
 }

@@ -17,5 +17,19 @@
 	},
 	"dependencies": {
 		"geode.node-ids": ">=v1.23.3"
+	},
+	"settings": {
+		"js-execution": {
+			"type": "bool",
+			"name": "JavaScript Execution",
+			"description": "If the box is unchecked, it disables JavaScript execution making webviews completely safe.",
+			"default": true
+		},
+		"warning-prompts": {
+			"type": "bool",
+			"name": "Warning Prompts",
+			"description": "When pressing \"Download\" on the prompt it downloads the source code of the website that is about to render for safety. (you can also select the download path)",
+			"default": true
+		}
 	}
 }
