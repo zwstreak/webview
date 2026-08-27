@@ -1,8 +1,6 @@
-#include <Geode/cocos/menu_nodes/CCMenu.h>
 #include <Geode/utils/file.hpp>
-
-#include <Webview.hpp>
 #include <include/parsers/HTMLParser.hpp>
+#include <Webview.hpp>
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -23,6 +21,15 @@ bool ZWebview::run() {
     }
 
     HTMLParser* parser = HTMLParser::parse(this->source);
+    if (parser == nullptr) {
+        return false;
+    }
+
+    HTMLResult result = parser->getResult();
+    for (auto& css : result.stylesheets) {
+        geode::log::info("{}", css);
+    }
+
     parser->free();
     return true;
 }

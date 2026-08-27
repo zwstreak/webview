@@ -17,13 +17,14 @@ HTMLParser* HTMLParser::parse(const std::string &content) {
         return nullptr;
     }
 
-    lxb_dom_node_t* body = lxb_dom_interface_node(lxb_html_document_body_element(document));
-    if (body == NULL) {
+    lxb_dom_node_t* head = (lxb_dom_node_t*)(document->head);
+    lxb_dom_node_t* body = (lxb_dom_node_t*)(document->body);
+    if (head == NULL || body == NULL) {
         lxb_html_document_destroy(document);
         return nullptr;
     }
 
-    return new HTMLParser(document, body);
+    return new HTMLParser(document, head, body);
 }
 
 // UTILS //
@@ -32,7 +33,72 @@ std::string stringFromLXBC(const lxb_char_t* c, size_t len) {
     return std::string(reinterpret_cast<const char*>(c), len);
 }
 
-// MAIN //
+// MAIN - CSS Extraction //
+std::string extractLinkCSS(lxb_dom_node_t* node) {
+    lxb_dom_attr_t* rel_attr = lxb_dom_element_attr_by_name((lxb_dom_element_t*)node, reinterpret_cast<const lxb_char_t*>("rel"), 3);
+    if (rel_attr == nullptr) {
+        return "";
+    }
+
+    size_t rel_size;
+    const lxb_char_t* rel_lxb = lxb_dom_attr_value(rel_attr, &rel_size);
+    std::string rel = stringFromLXBC(rel_lxb, rel_size);
+    if (rel != "stylesheet") {
+        return "";
+    }
+
+    lxb_dom_attr_t* href_attr = lxb_dom_element_attr_by_name((lxb_dom_element_t*)node, reinterpret_cast<const lxb_char_t*>("href"), 4);
+    if (href_attr == nullptr) {
+        return "";
+    }
+
+    size_t href_size;
+    const lxb_char_t* href_lxb = lxb_dom_attr_value(href_attr, &href_size);
+    std::string href = stringFromLXBC(href_lxb, href_size);
+
+    // TODO: the link has to be fetched
+    return href;
+}
+
+std::string extractStyleCSS(lxb_dom_node_t* node) {
+    size_t css_size;
+    const lxb_char_t* css_lxb = lxb_dom_node_text_content(node, &css_size);
+    std::string css = stringFromLXBC(css_lxb, css_size);
+    return css;
+}
+
+std::vector<std::string> extractStylesheets(lxb_dom_node_t* head) {
+    lxb_dom_node_t* node = lxb_dom_node_first_child(head);
+    std::vector<std::string> stylesheets;
+
+    while (node != NULL) {
+        if (node->type != LXB_DOM_NODE_TYPE_ELEMENT) {
+            node = lxb_dom_node_next(node);
+            continue;
+        }
+
+        lxb_tag_id_t tag = lxb_dom_node_tag_id(node);
+        if (tag != LXB_TAG_LINK && tag != LXB_TAG_STYLE) {
+            node = lxb_dom_node_next(node);
+            continue;
+        }
+
+        std::string stylesheet = (tag == LXB_TAG_LINK) 
+            ? extractLinkCSS(node) 
+            : extractStyleCSS(node);
+
+        if (!stylesheet.empty()) {
+            stylesheets.push_back(stylesheet);
+        }
+
+        node = lxb_dom_node_next(node);
+    }
+
+    return stylesheets;
+}
+
+// MAIN - Children Extraction //
+// ^^^ basically prettifying lexbor
 std::unordered_map<std::string, std::string> getAttributes(lxb_dom_element_t* element) {
     lxb_dom_attr* attribute = lxb_dom_element_first_attribute(element);
     std::unordered_map<std::string, std::string> attributes;
@@ -55,7 +121,8 @@ std::unordered_map<std::string, std::string> getAttributes(lxb_dom_element_t* el
 
 // sorry the comments was me miserably failing at the attempt of prettifiying it (talking about // X //)
 // well... on a second thought it kinda works
-std::vector<Element> getElementsOfNode(lxb_dom_node_t* target) {
+// TODO: tag_id does not support custom elements for now, and also the prefix
+std::vector<Element> getChildrenOfNode(lxb_dom_node_t* target) {
     lxb_dom_node_t* node = lxb_dom_node_first_child(target);
     std::vector<Element> elements = {};
 
@@ -66,12 +133,14 @@ std::vector<Element> getElementsOfNode(lxb_dom_node_t* target) {
         }
 
         lxb_dom_element_t* element = (lxb_dom_element_t*)node;
-        
-        // TAG //
-        size_t tag_len;
-        const lxb_char_t* tag_lxb = lxb_dom_element_qualified_name(element, &tag_len);
-        std::string tag = stringFromLXBC(tag_lxb, tag_len);
 
+        // TAG //
+        lxb_tag_id_t tag_id = lxb_dom_element_tag_id(element);
+        if (tag_id >= LXB_TAG__LAST_ENTRY) {
+            node = lxb_dom_node_next(node);
+            continue;
+        }
+        
         // CONTENT //
         size_t content_len;
         const lxb_char_t* content_lxb = lxb_dom_node_text_content(node, &content_len);
@@ -81,10 +150,10 @@ std::vector<Element> getElementsOfNode(lxb_dom_node_t* target) {
         std::unordered_map<std::string, std::string> attributes = getAttributes(element);
         
         // CHILDREN //
-        std::vector<Element> children = getElementsOfNode(node);
+        std::vector<Element> children = getChildrenOfNode(node);
 
         elements.push_back({ 
-            .tag = tag,
+            .tag = tag_id,
             .content = content,
             .attributes = attributes,
             .children = children
@@ -95,9 +164,13 @@ std::vector<Element> getElementsOfNode(lxb_dom_node_t* target) {
     return elements;
 }
 
-// OTHER //
-std::vector<Element> HTMLParser::getBodyChildren() {
-    return getElementsOfNode(this->body);
+// OTHER (MAIN) //
+HTMLResult HTMLParser::getResult() {
+    return {
+        .body = getChildrenOfNode(this->body),
+        .stylesheets = extractStylesheets(this->head),
+        .js = {}
+    };
 }
 
 // FREE //
@@ -107,7 +180,8 @@ void HTMLParser::free() {
 }
 
 // CONSTRUCTOR //
-HTMLParser::HTMLParser(lxb_html_document_t* document, lxb_dom_node_t* body) {
+HTMLParser::HTMLParser(lxb_html_document_t* document, lxb_dom_node_t* head, lxb_dom_node_t* body) {
     this->document = document;
+    this->head = head;
     this->body = body;
 }

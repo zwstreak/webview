@@ -7,10 +7,16 @@
 #include <string>
 
 struct Element {
-    std::string tag;
+    lxb_tag_id_t tag;
     std::string content;
     std::unordered_map<std::string, std::string> attributes;
     std::vector<Element> children;
+};
+
+struct HTMLResult {
+    std::vector<Element> body;
+    std::vector<std::string> stylesheets;
+    std::vector<std::string> js;
 };
 
 class HTMLParser {
@@ -19,12 +25,13 @@ public:
      * @warning can return nullptr if any errors happen while parsing.
      */
     static HTMLParser* parse(const std::string& content);
-    std::vector<Element> getBodyChildren();
+    HTMLResult getResult();
     void free();
 private:
     lxb_html_document_t* document;
+    lxb_dom_node_t* head;
     lxb_dom_node_t* body;
-    HTMLParser(lxb_html_document_t* document, lxb_dom_node_t* body);
+    HTMLParser(lxb_html_document_t* document, lxb_dom_node_t* head, lxb_dom_node_t* body);
 };
 
 #endif
