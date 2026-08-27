@@ -1,8 +1,7 @@
-#include "lexbor/dom/interface.h"
-#include "lexbor/dom/interfaces/node.h"
 #include <include/parsers/HTMLParser.hpp>
+#include <lexbor/dom/interfaces/node.h>
 
-// https://lexbor.com/documentation/#
+// https://lexbor.com/documentation
 HTMLParser* HTMLParser::parse(const std::string &content) {
     lxb_html_document_t* document = lxb_html_document_create();
     if (document == NULL) {
@@ -34,67 +33,44 @@ std::string stringFromLXBC(const lxb_char_t* c, size_t len) {
 }
 
 // MAIN - CSS Extraction //
-std::string extractLinkCSS(lxb_dom_node_t* node) {
-    lxb_dom_attr_t* rel_attr = lxb_dom_element_attr_by_name((lxb_dom_element_t*)node, reinterpret_cast<const lxb_char_t*>("rel"), 3);
-    if (rel_attr == nullptr) {
+std::string extractLinkCSS(Element element) {
+    auto rel_it = element.attributes.find("rel");
+    auto href_it = element.attributes.find("href");
+    if (rel_it == element.attributes.end() || href_it == element.attributes.end()) {
         return "";
     }
 
-    size_t rel_size;
-    const lxb_char_t* rel_lxb = lxb_dom_attr_value(rel_attr, &rel_size);
-    std::string rel = stringFromLXBC(rel_lxb, rel_size);
-    if (rel != "stylesheet") {
+    if (rel_it->second != "stylesheet") {
         return "";
     }
 
-    lxb_dom_attr_t* href_attr = lxb_dom_element_attr_by_name((lxb_dom_element_t*)node, reinterpret_cast<const lxb_char_t*>("href"), 4);
-    if (href_attr == nullptr) {
-        return "";
-    }
-
-    size_t href_size;
-    const lxb_char_t* href_lxb = lxb_dom_attr_value(href_attr, &href_size);
-    std::string href = stringFromLXBC(href_lxb, href_size);
-
-    // TODO: the link has to be fetched
-    return href;
+    return href_it->second;
 }
 
-std::string extractStyleCSS(lxb_dom_node_t* node) {
-    size_t css_size;
-    const lxb_char_t* css_lxb = lxb_dom_node_text_content(node, &css_size);
-    std::string css = stringFromLXBC(css_lxb, css_size);
-    return css;
-}
-
-std::vector<std::string> extractStylesheets(lxb_dom_node_t* head) {
-    lxb_dom_node_t* node = lxb_dom_node_first_child(head);
+std::vector<std::string> extractStylesheets(std::vector<Element> head) {
     std::vector<std::string> stylesheets;
-
-    while (node != NULL) {
-        if (node->type != LXB_DOM_NODE_TYPE_ELEMENT) {
-            node = lxb_dom_node_next(node);
+    for (auto& child : head) {
+        if (child.tag != LXB_TAG_LINK && child.tag != LXB_TAG_STYLE) {
             continue;
         }
 
-        lxb_tag_id_t tag = lxb_dom_node_tag_id(node);
-        if (tag != LXB_TAG_LINK && tag != LXB_TAG_STYLE) {
-            node = lxb_dom_node_next(node);
+        std::string stylesheet = (child.tag == LXB_TAG_LINK)
+            ? extractLinkCSS(child)
+            : child.content;
+
+        if (stylesheet.empty()) {
             continue;
         }
 
-        std::string stylesheet = (tag == LXB_TAG_LINK) 
-            ? extractLinkCSS(node) 
-            : extractStyleCSS(node);
-
-        if (!stylesheet.empty()) {
-            stylesheets.push_back(stylesheet);
-        }
-
-        node = lxb_dom_node_next(node);
+        stylesheets.push_back(stylesheet);
     }
 
     return stylesheets;
+}
+
+// MAIN - JS Extraction //
+std::vector<std::string> extractScripts(std::vector<Element> head, std::vector<Element> body) {
+    return {};
 }
 
 // MAIN - Children Extraction //
@@ -166,10 +142,13 @@ std::vector<Element> getChildrenOfNode(lxb_dom_node_t* target) {
 
 // OTHER (MAIN) //
 HTMLResult HTMLParser::getResult() {
+    std::vector<Element> head_children = getChildrenOfNode(this->head);
+    std::vector<Element> body_children = getChildrenOfNode(this->body);
+
     return {
-        .body = getChildrenOfNode(this->body),
-        .stylesheets = extractStylesheets(this->head),
-        .js = {}
+        .body = body_children,
+        .stylesheets = extractStylesheets(head_children),
+        .js = extractScripts(head_children, body_children)
     };
 }
 
