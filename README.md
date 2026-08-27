@@ -32,8 +32,8 @@ CCMenu* webview = zwk::WebView::createFromResource("index.html");
 ```
 
 # Questions & Answers
-1. What does zwk mean and why is it a namespace?<br/>
-**->** zwk means "zwstreak" which is the creator of this mod, I have decided to make it a namespace
+1. What does Z mean and why is it the prefix of classes?<br/>
+**->** Z means "zwstreak" which is the creator of this mod, I have decided to make it a prefix
    so that it holds all the APIs I make for Geometry Dash.
 
 2. Why is the logo so bad?<br/>

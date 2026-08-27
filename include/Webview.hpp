@@ -16,20 +16,16 @@ using namespace geode::prelude;
     #define WEBVIEW_API __attribute__((visibility("default")))
 #endif
 
-// inspired by $modify
-// this is so cursed lol
-#define $class(name, data) namespace zwk { struct name data; }
+// lowkey the $class was just making code uglier
+class WEBVIEW_API ZWebview : public CCMenu {
+public:
+    static ZWebview* create();
 
-$class(Webview, {
-    /**
-     * Create a new webview from an HTML source code.
-     */
-    static WEBVIEW_API CCMenu* create(const std::string& source);
-    /*
-     * Read contents of a resource and create a webview from it.
-     * @warning can return `nullptr` if the resource does not exist.
-     */
-    static WEBVIEW_API CCMenu* createFromResource(const std::string& resource);
-});
+    void fromSource(const std::string& source);
+    bool fromResource(const std::string& resource);
+    bool run();
+private:
+    std::string source;
+};
 
 #endif

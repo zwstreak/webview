@@ -7,18 +7,37 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
-WEBVIEW_API CCMenu* zwk::Webview::create(const std::string& source) {
-    DocumentParser* parser = DocumentParser::parse(source);
-    parser->free();
-    return CCMenu::create();
+ZWebview* ZWebview::create() {
+    auto ptr = new ZWebview();
+    if (ptr && ptr->init()) {
+        ptr->autorelease();
+        return ptr;
+    }
+
+    return nullptr;
 }
 
-WEBVIEW_API CCMenu* zwk::Webview::createFromResource(const std::string& resource) {
+bool ZWebview::run() {
+    if (this->source.empty()) {
+        return false;
+    }
+
+    DocumentParser* parser = DocumentParser::parse(this->source);
+    parser->free();
+    return true;
+}
+
+void ZWebview::fromSource(const std::string& source) {
+    this->source = source;
+}
+
+bool ZWebview::fromResource(const std::string& resource) {
     fs::path resources = Mod::get()->getResourcesDir();
     Result<std::string> result = file::readString(resources / resource);
     if (!result) {
-        return nullptr;
+        return false;
     }
 
-    return zwk::Webview::create(result.unwrapOr("huh"));
+    this->fromSource(result.unwrapOr("huh"));
+    return true;
 }
