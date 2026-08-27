@@ -13,10 +13,14 @@ struct Element {
     std::vector<Element> children;
 };
 
+struct Stylesheet {
+    bool isURL;
+    std::string content;
+};
+
 struct HTMLResult {
     std::vector<Element> body;
-    std::vector<std::string> stylesheets;
-    std::vector<std::string> js;
+    std::vector<Stylesheet> stylesheets;
 };
 
 class HTMLParser {

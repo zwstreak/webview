@@ -26,9 +26,6 @@ bool ZWebview::run() {
     }
 
     HTMLResult result = parser->getResult();
-    for (auto& css : result.stylesheets) {
-        geode::log::info("{}", css);
-    }
 
     parser->free();
     return true;

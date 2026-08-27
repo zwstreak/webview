@@ -33,32 +33,32 @@ std::string stringFromLXBC(const lxb_char_t* c, size_t len) {
 }
 
 // MAIN - CSS Extraction //
-std::string extractLinkCSS(Element element) {
+Stylesheet extractLinkCSS(Element element) {
     auto rel_it = element.attributes.find("rel");
     auto href_it = element.attributes.find("href");
     if (rel_it == element.attributes.end() || href_it == element.attributes.end()) {
-        return "";
+        return { true, "" };
     }
 
     if (rel_it->second != "stylesheet") {
-        return "";
+        return { true, "" };
     }
 
-    return href_it->second;
+    return { true, href_it->second };
 }
 
-std::vector<std::string> extractStylesheets(std::vector<Element> head) {
-    std::vector<std::string> stylesheets;
+std::vector<Stylesheet> extractStylesheets(std::vector<Element> head) {
+    std::vector<Stylesheet> stylesheets;
     for (auto& child : head) {
         if (child.tag != LXB_TAG_LINK && child.tag != LXB_TAG_STYLE) {
             continue;
         }
 
-        std::string stylesheet = (child.tag == LXB_TAG_LINK)
+        Stylesheet stylesheet = (child.tag == LXB_TAG_LINK)
             ? extractLinkCSS(child)
-            : child.content;
+            : Stylesheet({ false, child.content });
 
-        if (stylesheet.empty()) {
+        if (stylesheet.content.empty()) {
             continue;
         }
 
@@ -66,11 +66,6 @@ std::vector<std::string> extractStylesheets(std::vector<Element> head) {
     }
 
     return stylesheets;
-}
-
-// MAIN - JS Extraction //
-std::vector<std::string> extractScripts(std::vector<Element> head, std::vector<Element> body) {
-    return {};
 }
 
 // MAIN - Children Extraction //
@@ -147,8 +142,7 @@ HTMLResult HTMLParser::getResult() {
 
     return {
         .body = body_children,
-        .stylesheets = extractStylesheets(head_children),
-        .js = extractScripts(head_children, body_children)
+        .stylesheets = extractStylesheets(head_children)
     };
 }
 
