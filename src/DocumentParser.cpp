@@ -32,7 +32,27 @@ std::string stringFromLXBC(const lxb_char_t* c, size_t len) {
     return std::string(reinterpret_cast<const char*>(c), len);
 }
 
-// OTHER //
+std::unordered_map<std::string, std::string> getAttributes(lxb_dom_element_t* element) {
+    lxb_dom_attr* attribute = lxb_dom_element_first_attribute(element);
+    std::unordered_map<std::string, std::string> attributes;
+
+    while (attribute != NULL) {
+        size_t name_len;
+        const lxb_char_t* name_lxb = lxb_dom_attr_qualified_name(attribute, &name_len);
+        std::string name = stringFromLXBC(name_lxb, name_len);
+
+        size_t value_len;
+        const lxb_char_t* value_lxb = lxb_dom_attr_value(attribute, &value_len);
+        std::string value = stringFromLXBC(value_lxb, value_len);
+
+        attributes.insert({ name, value });
+        attribute = lxb_dom_element_next_attribute(attribute);
+    }
+
+    return attributes;
+}
+
+// MAIN //
 std::vector<Element> DocumentParser::getElements() {
     lxb_dom_node_t* node = lxb_dom_node_first_child(this->body);
     std::vector<Element> elements = {};
@@ -43,10 +63,15 @@ std::vector<Element> DocumentParser::getElements() {
             continue;
         }
 
-        size_t len;
-        const lxb_char_t* name = lxb_dom_node_name(node, &len);
-        std::string tag = stringFromLXBC(name, len);
-        elements.push_back({ .tag = tag });
+        lxb_dom_element_t* element = (lxb_dom_element_t*)node;
+        
+        size_t tag_len;
+        const lxb_char_t* tag_lxb = lxb_dom_element_qualified_name(element, &tag_len);
+        std::string tag = stringFromLXBC(tag_lxb, tag_len);
+
+        std::unordered_map<std::string, std::string> attributes = getAttributes(element);
+
+        elements.push_back({ .tag = tag, .attributes = attributes });
         node = lxb_dom_node_next(node);
     }
 
