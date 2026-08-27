@@ -32,6 +32,7 @@ std::string stringFromLXBC(const lxb_char_t* c, size_t len) {
     return std::string(reinterpret_cast<const char*>(c), len);
 }
 
+// MAIN //
 std::unordered_map<std::string, std::string> getAttributes(lxb_dom_element_t* element) {
     lxb_dom_attr* attribute = lxb_dom_element_first_attribute(element);
     std::unordered_map<std::string, std::string> attributes;
@@ -52,9 +53,10 @@ std::unordered_map<std::string, std::string> getAttributes(lxb_dom_element_t* el
     return attributes;
 }
 
-// MAIN //
-std::vector<Element> DocumentParser::getElements() {
-    lxb_dom_node_t* node = lxb_dom_node_first_child(this->body);
+// sorry the comments was me miserably failing at the attempt of prettifiying it (talking about // X //)
+// well... on a second thought it kinda works
+std::vector<Element> getElementsOfNode(lxb_dom_node_t* target) {
+    lxb_dom_node_t* node = lxb_dom_node_first_child(target);
     std::vector<Element> elements = {};
 
     while (node != NULL) {
@@ -65,25 +67,37 @@ std::vector<Element> DocumentParser::getElements() {
 
         lxb_dom_element_t* element = (lxb_dom_element_t*)node;
         
+        // TAG //
         size_t tag_len;
         const lxb_char_t* tag_lxb = lxb_dom_element_qualified_name(element, &tag_len);
         std::string tag = stringFromLXBC(tag_lxb, tag_len);
 
+        // CONTENT //
         size_t content_len;
         const lxb_char_t* content_lxb = lxb_dom_node_text_content(node, &content_len);
         std::string content = stringFromLXBC(content_lxb, content_len);
 
+        // ATTRIBUTES //
         std::unordered_map<std::string, std::string> attributes = getAttributes(element);
+        
+        // CHILDREN //
+        std::vector<Element> children = getElementsOfNode(node);
 
         elements.push_back({ 
             .tag = tag,
             .content = content,
-            .attributes = attributes
+            .attributes = attributes,
+            .children = children
         });
         node = lxb_dom_node_next(node);
     }
 
     return elements;
+}
+
+// OTHER //
+std::vector<Element> DocumentParser::getBodyChildren() {
+    return getElementsOfNode(this->body);
 }
 
 // FREE //

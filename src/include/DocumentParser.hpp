@@ -9,8 +9,8 @@
 struct Element {
     std::string tag;
     std::string content;
-    std::vector<Element> children;
     std::unordered_map<std::string, std::string> attributes;
+    std::vector<Element> children;
 };
 
 class DocumentParser {
@@ -19,7 +19,7 @@ public:
      * @warning can return nullptr if any errors happen while parsing.
      */
     static DocumentParser* parse(const std::string& content);
-    std::vector<Element> getElements();
+    std::vector<Element> getBodyChildren();
     void free();
 private:
     lxb_html_document_t* document;
