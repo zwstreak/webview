@@ -8,7 +8,7 @@ void WebviewScope::addChild(CCNode* node) {
 
 // MAIN FUNCTIONALITY //
 void WebviewScope::enter() {
-	if (this->scopes.size() > 100) {
+	if (this->scopes.size() > 50) {
 		geode::log::warn("woah there what are you trying to load??");
 		return;
 	}
@@ -30,6 +30,10 @@ CCMenu* WebviewScope::release() {
 	CCMenu* copy = this->released;
 	this->released = nullptr;
 	return copy;
+}
+
+CCMenu* WebviewScope::get() {
+	return this->scopes.back();
 }
 
 WebviewScope::WebviewScope(CCMenu* parent) {

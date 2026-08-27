@@ -1,24 +1,27 @@
 #include <Geode/Geode.hpp>
 #include <include/renderer/WebviewRenderer.hpp>
+#include <include/renderer/HTML/HTML.hpp>
 
-void WebviewRenderer::render(std::vector<Element> children) {
+void WebviewRenderer::renderHTML(std::vector<Element> children) {
 	for (auto& child : children) {
-		switch (child.tag) {
-		case LXB_TAG_P:
-			auto label = CCLabelBMFont::create(child.content.c_str(), "bigFont.fnt");
-			this->scope->addChild(label);
-			break;
-		}
-
+		html_render_element(this->scope->get(), child);
 		if (child.children.size() < 1) {
 			continue;
 		}
 
 		this->scope->enter();
-		this->render(child.children);
+		this->renderHTML(child.children);
 		this->scope->leave();
 		this->scope->addChild(this->scope->release());
 	}
+}
+
+// execute head tag scripts
+// render HTML
+// apply CSS styles
+// execute body tag scripts
+void WebviewRenderer::render(HTMLResult data) {
+	this->renderHTML(data.body);
 }
 
 // hehe fancy

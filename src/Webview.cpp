@@ -28,7 +28,7 @@ bool ZWebview::run() {
     }
 
     HTMLResult result = parser->getResult();
-    renderer->render(result.body);
+    renderer->render(result);
     renderer->free();
     
     return true;

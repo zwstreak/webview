@@ -1,16 +1,17 @@
 #ifndef WEBVIEW_RENDERER_HPP
 #define WEBVIEW_RENDERER_HPP
-#include <vector>
-#include <Webview.hpp>
 #include <include/renderer/Scope.hpp>
 #include <include/parsers/HTMLParser.hpp>
+#include <vector>
+#include <Webview.hpp>
 
 class WebviewRenderer {
 public:
 	static WebviewRenderer* create(ZWebview* target);
-	void render(std::vector<Element> children);
+	void render(HTMLResult data);
 	void free();
 private:
+	void renderHTML(std::vector<Element> children);
 	WebviewScope* scope;
 	WebviewRenderer() = default;
 };
