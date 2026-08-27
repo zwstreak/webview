@@ -23,6 +23,7 @@ bool ZWebview::run() {
     }
 
     DocumentParser* parser = DocumentParser::parse(this->source);
+    geode::log::info("{}", parser->getElements()[0].content);
     parser->free();
     return true;
 }

@@ -69,9 +69,17 @@ std::vector<Element> DocumentParser::getElements() {
         const lxb_char_t* tag_lxb = lxb_dom_element_qualified_name(element, &tag_len);
         std::string tag = stringFromLXBC(tag_lxb, tag_len);
 
+        size_t content_len;
+        const lxb_char_t* content_lxb = lxb_dom_node_text_content(node, &content_len);
+        std::string content = stringFromLXBC(content_lxb, content_len);
+
         std::unordered_map<std::string, std::string> attributes = getAttributes(element);
 
-        elements.push_back({ .tag = tag, .attributes = attributes });
+        elements.push_back({ 
+            .tag = tag,
+            .content = content,
+            .attributes = attributes
+        });
         node = lxb_dom_node_next(node);
     }
 

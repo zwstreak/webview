@@ -8,9 +8,9 @@
 
 struct Element {
     std::string tag;
-    std::unordered_map<std::string, std::string> attributes;
     std::string content;
     std::vector<Element> children;
+    std::unordered_map<std::string, std::string> attributes;
 };
 
 class DocumentParser {
