@@ -138,10 +138,9 @@ std::vector<Element> getChildrenOfNode(lxb_dom_node_t* target) {
 // OTHER (MAIN) //
 HTMLResult HTMLParser::getResult() {
     std::vector<Element> head_children = getChildrenOfNode(this->head);
-    std::vector<Element> body_children = getChildrenOfNode(this->body);
-
     return {
-        .body = body_children,
+        .body = getChildrenOfNode(this->body),
+        .head = head_children,
         .stylesheets = extractStylesheets(head_children)
     };
 }

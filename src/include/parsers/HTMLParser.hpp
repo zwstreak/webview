@@ -20,6 +20,7 @@ struct Stylesheet {
 
 struct HTMLResult {
     std::vector<Element> body;
+    std::vector<Element> head;
     std::vector<Stylesheet> stylesheets;
 };
 
