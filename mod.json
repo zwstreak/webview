@@ -7,10 +7,14 @@
 		"ios": "2.2081"
 	},
 	"id": "zwstreak.webview",
-	"name": "Webview",
+	"name": "WebView",
 	"version": "v1.0.0",
 	"developer": "zwstreak",
-	"description": "Adds Webview support to Geometry Dash.",
+	"description": "Adds WebView support to Geometry Dash.",
+	"tags": ["developer", "api", "utility"],
+	"links": {
+		"source": "https://github.com/zwstreak/webview"
+	},
 	"dependencies": {
 		"geode.node-ids": ">=v1.23.3"
 	}

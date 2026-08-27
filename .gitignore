@@ -64,3 +64,5 @@ build-*/
 /cmake-build-*/
 
 compile_commands.json
+src/debug
+out
