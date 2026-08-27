@@ -30,13 +30,14 @@ public:
      * @warning can return nullptr if any errors happen while parsing.
      */
     static HTMLParser* parse(const std::string& content);
+	// @warning automatically frees
     HTMLResult getResult();
-    void free();
 private:
     lxb_html_document_t* document;
     lxb_dom_node_t* head;
     lxb_dom_node_t* body;
     HTMLParser(lxb_html_document_t* document, lxb_dom_node_t* head, lxb_dom_node_t* body);
+    void free();
 };
 
 #endif

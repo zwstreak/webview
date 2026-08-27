@@ -1,5 +1,6 @@
 #include <Geode/utils/file.hpp>
 #include <include/parsers/HTMLParser.hpp>
+#include <include/renderer/WebviewRenderer.hpp>
 #include <Webview.hpp>
 
 #include <filesystem>
@@ -20,14 +21,16 @@ bool ZWebview::run() {
         return false;
     }
 
+    WebviewRenderer* renderer = WebviewRenderer::create(this);
     HTMLParser* parser = HTMLParser::parse(this->source);
     if (parser == nullptr) {
         return false;
     }
 
     HTMLResult result = parser->getResult();
-
-    parser->free();
+    renderer->render(result.body);
+    renderer->free();
+    
     return true;
 }
 
