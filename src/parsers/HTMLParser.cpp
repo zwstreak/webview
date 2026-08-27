@@ -1,9 +1,9 @@
 #include "lexbor/dom/interface.h"
 #include "lexbor/dom/interfaces/node.h"
-#include <include/DocumentParser.hpp>
+#include <include/parsers/HTMLParser.hpp>
 
 // https://lexbor.com/documentation/#
-DocumentParser* DocumentParser::parse(const std::string &content) {
+HTMLParser* HTMLParser::parse(const std::string &content) {
     lxb_html_document_t* document = lxb_html_document_create();
     if (document == NULL) {
         lxb_html_document_destroy(document);
@@ -23,7 +23,7 @@ DocumentParser* DocumentParser::parse(const std::string &content) {
         return nullptr;
     }
 
-    return new DocumentParser(document, body);
+    return new HTMLParser(document, body);
 }
 
 // UTILS //
@@ -96,18 +96,18 @@ std::vector<Element> getElementsOfNode(lxb_dom_node_t* target) {
 }
 
 // OTHER //
-std::vector<Element> DocumentParser::getBodyChildren() {
+std::vector<Element> HTMLParser::getBodyChildren() {
     return getElementsOfNode(this->body);
 }
 
 // FREE //
-void DocumentParser::free() {
+void HTMLParser::free() {
     lxb_html_document_destroy(document);
     delete this;
 }
 
 // CONSTRUCTOR //
-DocumentParser::DocumentParser(lxb_html_document_t* document, lxb_dom_node_t* body) {
+HTMLParser::HTMLParser(lxb_html_document_t* document, lxb_dom_node_t* body) {
     this->document = document;
     this->body = body;
 }

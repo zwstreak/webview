@@ -13,18 +13,18 @@ struct Element {
     std::vector<Element> children;
 };
 
-class DocumentParser {
+class HTMLParser {
 public:
     /**
      * @warning can return nullptr if any errors happen while parsing.
      */
-    static DocumentParser* parse(const std::string& content);
+    static HTMLParser* parse(const std::string& content);
     std::vector<Element> getBodyChildren();
     void free();
 private:
     lxb_html_document_t* document;
     lxb_dom_node_t* body;
-    DocumentParser(lxb_html_document_t* document, lxb_dom_node_t* body);
+    HTMLParser(lxb_html_document_t* document, lxb_dom_node_t* body);
 };
 
 #endif

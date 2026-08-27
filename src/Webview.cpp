@@ -2,7 +2,7 @@
 #include <Geode/utils/file.hpp>
 
 #include <Webview.hpp>
-#include <include/DocumentParser.hpp>
+#include <include/parsers/HTMLParser.hpp>
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -22,7 +22,7 @@ bool ZWebview::run() {
         return false;
     }
 
-    DocumentParser* parser = DocumentParser::parse(this->source);
+    HTMLParser* parser = HTMLParser::parse(this->source);
     parser->free();
     return true;
 }
