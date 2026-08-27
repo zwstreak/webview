@@ -9,7 +9,7 @@ This mod is intended to be used by <cr>developers</cr>, And it does not do anyth
 * You can turn off <cr>Warning Prompts</cr> under the mod settings.
 
 # What does it do
-It allows developers to render websites on Geometry Dash and returns a <cg>CCMenu</cg>* object.
+It allows developers to render websites on Geometry Dash and returns a <cg>ZWebview</cg>* object.
 
 # How to use?
 Refer to the [GitHub Page](https://github.com/zwstreak/webview) For more information.

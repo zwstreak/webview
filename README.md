@@ -21,14 +21,20 @@ This is not the kind of Webview you'd expect, It instead shows content by conver
 
 # How to use
 TODO: Show how to install the API first
-### Loading an HTML string
+### Loading an HTML string (not recommended)
 ```c++
-CCMenu* webview = zwk::WebView::create("<html><body><div>Hello World!</div></body></html>");
+ZWebview* webview = ZWebview::create();
+webview->loadSource("<html><body><div>Hello World!</div></body></html>");
+webview->run();
+this->addChild(webview);
 ```
 
 ### Loading an HTML resource
 ```c++
-CCMenu* webview = zwk::WebView::createFromResource("index.html");
+ZWebview webview = ZWebview::create();
+webview->loadResource("index.html");
+webview->run();
+this->addChild(webview);
 ```
 
 # Questions & Answers
@@ -40,4 +46,4 @@ CCMenu* webview = zwk::WebView::createFromResource("index.html");
 **->** uhhhh i think that is because i am the only developer of this mod lol (i tried (kinda))
 
 3. Is it free?<br/>
-**->** YES, it will and always be free.
+**->** YES, it is and will always be free.

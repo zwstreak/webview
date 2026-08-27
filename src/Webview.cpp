@@ -27,17 +27,17 @@ bool ZWebview::run() {
     return true;
 }
 
-void ZWebview::fromSource(const std::string& source) {
+void ZWebview::loadSource(const std::string& source) {
     this->source = source;
 }
 
-bool ZWebview::fromResource(const std::string& resource) {
+bool ZWebview::loadResource(const std::string& resource) {
     fs::path resources = Mod::get()->getResourcesDir();
     Result<std::string> result = file::readString(resources / resource);
     if (!result) {
         return false;
     }
 
-    this->fromSource(result.unwrapOr("huh"));
+    this->loadSource(result.unwrapOr("huh"));
     return true;
 }

@@ -21,8 +21,8 @@ class WEBVIEW_API ZWebview : public CCMenu {
 public:
     static ZWebview* create();
 
-    void fromSource(const std::string& source);
-    bool fromResource(const std::string& resource);
+    void loadSource(const std::string& source);
+    bool loadResource(const std::string& resource);
     bool run();
 private:
     std::string source;
