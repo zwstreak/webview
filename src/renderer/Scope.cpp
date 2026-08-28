@@ -1,19 +1,19 @@
 #include <include/renderer/Scope.hpp>
 #include <Geode/Geode.hpp>
 
-// CCMenu stuff //
+// CCNode stuff //
 void WebviewScope::addChild(CCNode* node) {
 	this->scopes.back()->addChild(node);
 }
 
 // MAIN FUNCTIONALITY //
-void WebviewScope::enter() {
+void WebviewScope::enter(CCNode* node) {
 	if (this->scopes.size() > 50) {
-		geode::log::warn("woah there what are you trying to load??");
+		geode::log::warn("woah there what are you trying to load?? 50+ bomboclat children btw");
 		return;
 	}
 
-	this->scopes.push_back(CCMenu::create());
+	this->scopes.push_back(node);
 }
 
 void WebviewScope::leave() {
@@ -21,22 +21,9 @@ void WebviewScope::leave() {
 		return;
 	}
 
-	this->released = this->scopes.back();
 	this->scopes.pop_back();
 }
 
-// yeah this is obv safe trust me
-CCMenu* WebviewScope::release() {
-	CCMenu* copy = this->released;
-	this->released = nullptr;
-	return copy;
-}
-
-CCMenu* WebviewScope::get() {
-	return this->scopes.back();
-}
-
-WebviewScope::WebviewScope(CCMenu* parent) {
+WebviewScope::WebviewScope(ZWebview* parent) {
 	this->scopes = { parent };
-	this->released = nullptr;
 }

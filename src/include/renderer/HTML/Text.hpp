@@ -3,6 +3,6 @@
 #include "Include.hpp"
 
 bool html_element_is_text(Element element);
-void html_render_text(CCMenu* parent, Element element);
+CCNode* html_render_text(Element element);
 
 #endif

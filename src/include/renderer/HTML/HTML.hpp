@@ -3,6 +3,6 @@
 #include "Include.hpp"
 
 // going for C-style functions cuz classes are kinda unnecessary for this
-void html_render_element(CCMenu* parent, Element element);
+CCNode* html_render_element(Element element);
 
 #endif

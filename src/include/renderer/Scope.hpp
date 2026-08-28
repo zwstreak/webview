@@ -1,20 +1,18 @@
 #ifndef WEBVIEW_RENDERER_SCOPE_HPP
 #define WEBVIEW_RENDERER_SCOPE_HPP
 #include <vector>
+#include <Webview.hpp>
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 
 class WebviewScope {
 public:
-	void enter();
+	void enter(CCNode* node);
 	void leave();
 	void addChild(CCNode* node);
-	CCMenu* release();
-	CCMenu* get();
-	WebviewScope(CCMenu* parent);
+	WebviewScope(ZWebview* webview);
 private:
-	std::vector<CCMenu*> scopes;
-	CCMenu* released;
+	std::vector<CCNode*> scopes;
 };
 
 #endif

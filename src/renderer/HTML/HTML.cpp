@@ -1,12 +1,16 @@
 #include <include/renderer/HTML/HTML.hpp>
 #include <include/renderer/HTML/Text.hpp>
+#include <include/renderer/HTML/Containers.hpp>
 
-void html_render_element(CCMenu* parent, Element element) {
+CCNode* html_render_element(Element element) {
 	if (html_element_is_text(element)) {
-		return html_render_text(parent, element);
+		return html_render_text(element);
 	}
 
 	switch (element.tag) {
-		// TODO: add div
+	case LXB_TAG_DIV:
+		return html_render_container(element);
 	}
+
+	return nullptr;
 }
