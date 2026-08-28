@@ -4,7 +4,7 @@
 
 void WebviewRenderer::renderHTML(std::vector<Element> children) {
 	for (auto& child : children) {
-		CCNode* node = html_render_element(child);
+		CCNode* node = html_transpile_element(child);
 		this->scope->addChild(node);
 
 		if (child.children.size() < 1) {

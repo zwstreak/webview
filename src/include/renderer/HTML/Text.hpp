@@ -3,6 +3,6 @@
 #include "Include.hpp"
 
 bool html_element_is_text(Element element);
-CCNode* html_render_text(Element element);
+CCNode* html_transpile_text(Element element);
 
 #endif
