@@ -13,6 +13,8 @@ ZWebview* ZWebview::create() {
         return ptr;
     }
 
+    // oops
+    delete ptr;
     return nullptr;
 }
 

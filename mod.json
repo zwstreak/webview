@@ -31,5 +31,8 @@
 			"description": "When pressing \"Download\" on the prompt it downloads the source code of the website that is about to render for safety. (you can also select the download path)",
 			"default": true
 		}
+	},
+	"resources": {
+		"files": ["resources/test.html", "resources/tinos.ttf"]
 	}
 }
