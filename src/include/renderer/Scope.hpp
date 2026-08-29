@@ -10,6 +10,7 @@ public:
 	void enter(CCNode* node);
 	void leave();
 	void addChild(CCNode* node);
+	void updateLayout();
 	WebviewScope(ZWebview* webview);
 private:
 	std::vector<CCNode*> scopes;

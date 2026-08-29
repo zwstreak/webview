@@ -1,6 +1,7 @@
 #include <Geode/Geode.hpp>
 #include <include/renderer/WebviewRenderer.hpp>
 #include <include/renderer/HTML/HTML.hpp>
+#include <include/renderer/HTML/Containers.hpp>
 
 void WebviewRenderer::renderHTML(std::vector<Element> children) {
 	for (auto& child : children) {
@@ -15,6 +16,8 @@ void WebviewRenderer::renderHTML(std::vector<Element> children) {
 		this->renderHTML(child.children);
 		this->scope->leave();
 	}
+
+	this->scope->updateLayout();
 }
 
 // execute head tag scripts
