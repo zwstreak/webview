@@ -18,7 +18,7 @@ void WebviewScope::enter(CCNode* node) {
 		return;
 	}
 
-	node->setLayout(html_container_get_default_layout());
+	html_container_set_layout_default(node);
 	this->scopes.push_back(node);
 }
 
@@ -27,14 +27,11 @@ void WebviewScope::leave() {
 		return;
 	}
 
-	this->scopes.back()->updateLayout();
+	this->updateLayout();
 	this->scopes.pop_back();
 }
 
 WebviewScope::WebviewScope(ZWebview* parent) {
-	auto layout = html_container_get_default_layout();
-	layout->setPadding({ 6.0f, 9.0f, 0.0f, 0.0f });
-	parent->setLayout(layout);
-
+	html_container_set_layout_default(parent, true);
 	this->scopes = { parent };
 }
