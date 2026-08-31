@@ -22,7 +22,7 @@
 		"js-execution": {
 			"type": "bool",
 			"name": "JavaScript Execution",
-			"description": "If the box is unchecked, it disables JavaScript execution making webviews completely safe.",
+			"description": "If the box is unchecked, it disables JavaScript execution making webviews completely safe, However some webpages might break.",
 			"default": true
 		},
 		"warning-prompts": {
@@ -33,6 +33,7 @@
 		}
 	},
 	"resources": {
+		"sprites": ["resources/background.png"],
 		"files": ["resources/test.html", "resources/tinos.ttf"]
 	}
 }
