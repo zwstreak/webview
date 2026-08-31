@@ -4,11 +4,11 @@
 
 // CCNode stuff //
 void WebviewScope::addChild(CCNode* node) {
-	this->scopes.back()->addChild(node);
+	this->get()->addChild(node);
 }
 
 void WebviewScope::updateLayout() {
-	this->scopes.back()->updateLayout(false);
+	this->get()->updateLayout(false);
 }
 
 // MAIN FUNCTIONALITY //
@@ -29,6 +29,10 @@ void WebviewScope::leave() {
 
 	this->updateLayout();
 	this->scopes.pop_back();
+}
+
+CCNode* WebviewScope::get() {
+	return this->scopes.back();
 }
 
 WebviewScope::WebviewScope(ZWebview* parent) {

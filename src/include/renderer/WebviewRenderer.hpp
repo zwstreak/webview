@@ -12,6 +12,7 @@ public:
 	void free();
 private:
 	void renderHTML(std::vector<Element> children);
+	void addBackground(CCNode* parent);
 	WebviewScope* scope;
 	WebviewRenderer() = default;
 };

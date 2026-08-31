@@ -9,6 +9,7 @@ class WebviewScope {
 public:
 	void enter(CCNode* node);
 	void leave();
+	CCNode* get();
 	void addChild(CCNode* node);
 	void updateLayout();
 	WebviewScope(ZWebview* webview);

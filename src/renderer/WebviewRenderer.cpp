@@ -3,6 +3,18 @@
 #include <include/renderer/HTML/HTML.hpp>
 #include <include/renderer/HTML/Containers.hpp>
 
+void WebviewRenderer::addBackground(CCNode* parent) {
+	CCSprite* bg = CCSprite::create("background.png"_spr);
+	bg->setColor({ 255, 255, 255 });
+	bg->setContentSize(parent->getContentSize());
+	bg->setAnchorPoint({ 0.0f, 0.0f });
+	bg->setPosition({ 0.0f, 0.0f });
+	bg->setTextureRect({ 0.0f, 0.0f, parent->getContentWidth(), parent->getContentHeight() });
+	bg->setZOrder(-50);
+
+	parent->addChild(bg);
+}
+
 void WebviewRenderer::renderHTML(std::vector<Element> children) {
 	for (auto& child : children) {
 		CCNode* node = html_transpile_element(child);
@@ -26,6 +38,7 @@ void WebviewRenderer::renderHTML(std::vector<Element> children) {
 // execute body tag scripts
 void WebviewRenderer::render(HTMLResult data) {
 	this->renderHTML(data.body);
+	this->addBackground(this->scope->get());
 }
 
 // hehe fancy
