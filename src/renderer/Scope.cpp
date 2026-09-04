@@ -35,7 +35,6 @@ CCNode* WebviewScope::get() {
 	return this->scopes.back();
 }
 
-WebviewScope::WebviewScope(ZWebview* parent) {
-	html_container_set_layout_default(parent, true);
+WebviewScope::WebviewScope(CCMenu* parent) {
 	this->scopes = { parent };
 }

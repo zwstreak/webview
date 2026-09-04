@@ -25,7 +25,7 @@ bool html_element_is_text(Element element) {
 // i couldn't make CCLabelBMFont work with font sizes, i tried everything
 // and CCLabelTTF is so slow, but i guess you gotta do what you gotta do
 CCNode* html_transpile_text(Element element) {
-	auto label = CCLabelTTF::create(element.content.c_str(), "tinos.ttf"_spr, getFontSize(element));
+	auto label = CCLabelTTF::create(element.content.c_str(), "tinos.ttf"_spr, getFontSize(element) - 4.0f);
 	label->setColor({ 0, 0, 0 });
 	return label;
 }

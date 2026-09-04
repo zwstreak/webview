@@ -11,9 +11,12 @@ public:
 	void render(HTMLResult data);
 	void free();
 private:
+	void addTitlebar();
 	void renderHTML(std::vector<Element> children);
-	void addBackground(CCNode* parent);
+	void renderHTMLChild(Element child);
+
 	WebviewScope* scope;
+	ZWebview* webview;
 	WebviewRenderer() = default;
 };
 

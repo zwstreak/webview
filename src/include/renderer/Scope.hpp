@@ -12,7 +12,7 @@ public:
 	CCNode* get();
 	void addChild(CCNode* node);
 	void updateLayout();
-	WebviewScope(ZWebview* webview);
+	WebviewScope(CCMenu* parent);
 private:
 	std::vector<CCNode*> scopes;
 };

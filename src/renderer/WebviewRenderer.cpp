@@ -2,34 +2,74 @@
 #include <include/renderer/WebviewRenderer.hpp>
 #include <include/renderer/HTML/HTML.hpp>
 #include <include/renderer/HTML/Containers.hpp>
+#include <include/renderer/HTML/Button.hpp>
+#include <include/Utils.hpp>
 
-void WebviewRenderer::addBackground(CCNode* parent) {
+#define CREATE_EMPTY_ELEMENT(tag, content) { tag, content, {}, {} }
+#define TITLEBAR_HEIGHT 14
+
+void addBackground(CCNode* parent, float yPos, ccColor3B color = {255,255,255}) {
 	CCSprite* bg = CCSprite::create("background.png"_spr);
-	bg->setColor({ 255, 255, 255 });
+	bg->setColor(color);
 	bg->setContentSize(parent->getContentSize());
 	bg->setAnchorPoint({ 0.0f, 0.0f });
-	bg->setPosition({ 0.0f, 0.0f });
+	bg->setPosition({ 0.0f, yPos });
 	bg->setTextureRect({ 0.0f, 0.0f, parent->getContentWidth(), parent->getContentHeight() });
 	bg->setZOrder(-50);
-
 	parent->addChild(bg);
+}
+
+// EVERYTHING is a mess omg
+// btw one speck of dust will break the whole code
+void WebviewRenderer::addTitlebar() {
+	CCMenu* bar = CCMenu::create();
+	bar->setContentHeight(TITLEBAR_HEIGHT);
+
+	CCLabelTTF* name = CCLabelTTF::create("TITLE GOES HERE", "tinos.ttf"_spr, 10.0f);
+	name->setColor({ 0, 0, 0 });
+	name->setAnchorPoint({ 0.0f, 0.5f });
+	name->setPosition({ 9.0f, bar->getContentHeight() / 2 });
+	bar->addChild(name);
+
+	CCMenuItemSpriteExtra* button = html_transpile_button(CREATE_EMPTY_ELEMENT(LXB_TAG_BUTTON, "X"));
+	CCSprite* sprite = dynamic_cast<CCSprite*>(getChild(button, 0));
+	CCScale9Sprite* bg = dynamic_cast<CCScale9Sprite*>(getChild(sprite, 0));
+	bg->setVisible(false);
+	button->setPosition({ bar->getContentWidth() - 15.0f, bar->getContentHeight() / 2});
+	button->m_scaleMultiplier = 1.2f;
+	bar->addChild(button);
+
+	auto layout = ColumnLayout::create()
+		->setAxisAlignment(AxisAlignment::Start)
+		->setCrossAxisAlignment(AxisAlignment::Start)
+		->setCrossAxisLineAlignment(AxisAlignment::Start)
+		->setGap(-TITLEBAR_HEIGHT);
+
+	this->webview->setLayout(layout);
+	this->webview->addChild(bar);
+	addBackground(bar, 0.0f, { 240, 240, 240 });
+}
+
+void WebviewRenderer::renderHTMLChild(Element child) {
+	CCNode* node = html_transpile_element(child);
+	this->scope->addChild(node);
+
+	if (child.children.size() < 1) {
+		return;
+	}
+
+	this->scope->enter(node);
+	this->renderHTML(child.children);
+	this->scope->leave();
 }
 
 void WebviewRenderer::renderHTML(std::vector<Element> children) {
 	for (auto& child : children) {
-		CCNode* node = html_transpile_element(child);
-		this->scope->addChild(node);
-
-		if (child.children.size() < 1) {
-			continue;
-		}
-
-		this->scope->enter(node);
-		this->renderHTML(child.children);
-		this->scope->leave();
+		this->renderHTMLChild(child);
 	}
 
 	this->scope->updateLayout();
+	this->webview->updateLayout();
 }
 
 // execute head tag scripts
@@ -37,14 +77,27 @@ void WebviewRenderer::renderHTML(std::vector<Element> children) {
 // apply CSS styles
 // execute body tag scripts
 void WebviewRenderer::render(HTMLResult data) {
+	this->addTitlebar();
 	this->renderHTML(data.body);
-	this->addBackground(this->scope->get());
 }
 
 // hehe fancy
 WebviewRenderer* WebviewRenderer::create(ZWebview* target) {
+	auto container = CCMenu::create();
+	container->setContentSize(target->getContentSize());
+	container->setPosition({ 0.0f, 0.0f });
+	addBackground(container, -TITLEBAR_HEIGHT);
+	target->addChild(container);
+
+	auto content = CCMenu::create();
+	content->setAnchorPoint({ 0.0f, 0.0f });
+	content->setPosition({ 0.0f, 0.0f });
+	html_container_set_layout_default(content, true, TITLEBAR_HEIGHT);
+	container->addChild(content);
+
 	auto ptr = new WebviewRenderer();
-	ptr->scope = new WebviewScope(target);
+	ptr->scope = new WebviewScope(content);
+	ptr->webview = target;
 	return ptr;
 }
 

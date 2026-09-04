@@ -1,13 +1,8 @@
 #include <include/renderer/HTML/Button.hpp>
 #include <include/renderer/HTML/HTML.hpp>
+#include <include/Utils.hpp>
 
-CCNode* getChild(CCNode* parent, unsigned int at) {
-	CCArray* children = parent->getChildren();
-	CCObject* child = children->objectAtIndex(at);
-	return dynamic_cast<CCNode*>(child);
-}
-
-CCNode* html_transpile_button(Element data) {
+CCMenuItemSpriteExtra* html_transpile_button(Element data) {
 	auto sprite = ButtonSprite::create(data.content.c_str(), "bigFont.fnt", "background.png"_spr, 0.4f);
 	sprite->removeChild(getChild(sprite, 0), true);
 	

@@ -23,10 +23,10 @@ AxisLayout* html_container_get_default_layout() {
     return layout;
 }
 
-void html_container_set_layout_default(CCNode* node, bool webview) {
+void html_container_set_layout_default(CCNode* node, bool webview, float offset) {
     auto layout = html_container_get_default_layout();
     if (webview) {
-        layout->setPadding({ 6.0f, 9.0f, 0.0f, 0.0f });
+        layout->setPadding({ 6.0f, 9.0f + offset, 0.0f, 0.0f });
         node->setLayout(layout);
         return;
     }
