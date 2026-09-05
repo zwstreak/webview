@@ -30,19 +30,18 @@ std::string extractTitle(std::vector<Element> head) {
 // EVERYTHING is a mess omg
 // btw one speck of dust will break the whole code
 void WebviewRenderer::addTitlebar(std::vector<Element> head) {
-	CCMenu* bar = CCMenu::create();
+	std::string title = extractTitle(head);
+	auto bar = CCMenu::create();
 	bar->setContentHeight(TITLEBAR_HEIGHT);
 
-	std::string title = extractTitle(head);
-	CCLabelTTF* name = CCLabelTTF::create(title.c_str(), "tinos.ttf"_spr, 10.0f);
+	auto name = CCLabelTTF::create(title.c_str(), "tinos.ttf"_spr, 10.0f);
 	name->setColor({ 0, 0, 0 });
 	name->setAnchorPoint({ 0.0f, 0.5f });
 	name->setPosition({ 9.0f, bar->getContentHeight() / 2 });
 	bar->addChild(name);
 
-	CCMenuItemSpriteExtra* button = html_transpile_button(CREATE_EMPTY_ELEMENT(LXB_TAG_BUTTON, "X"));
-	CCSprite* sprite = dynamic_cast<CCSprite*>(getChild(button, 0));
-	CCScale9Sprite* bg = dynamic_cast<CCScale9Sprite*>(getChild(sprite, 0));
+	auto button = html_transpile_button(CREATE_EMPTY_ELEMENT(LXB_TAG_BUTTON, "X"));
+	auto bg = dynamic_cast<CCScale9Sprite*>(button->getChildByIDRecursive("button-bg"));
 	bg->setVisible(false);
 	bar->addChild(button);
 
