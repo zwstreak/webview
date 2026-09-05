@@ -9,10 +9,10 @@ class WebviewRenderer {
 public:
 	static WebviewRenderer* create(ZWebview* target);
 	void render(HTMLResult data);
-	void free();
+	void closeAndCleanup();
 private:
-	void addTitlebar();
-	void renderHTML(std::vector<Element> children);
+	void addTitlebar(std::vector<Element> head);
+	void renderHTML(std::vector<Element> body);
 	void renderHTMLChild(Element child);
 
 	WebviewScope* scope;

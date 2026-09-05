@@ -19,13 +19,22 @@ void addBackground(CCNode* parent, float yPos, ccColor3B color = {255,255,255}) 
 	parent->addChild(bg);
 }
 
+std::string extractTitle(std::vector<Element> head) {
+	auto it = std::find_if(head.begin(), head.end(), [](const Element& element) {
+		return element.tag == LXB_TAG_TITLE;
+	});
+
+	return (it == head.end()) ? "Untitled" : it->content;
+}
+
 // EVERYTHING is a mess omg
 // btw one speck of dust will break the whole code
-void WebviewRenderer::addTitlebar() {
+void WebviewRenderer::addTitlebar(std::vector<Element> head) {
 	CCMenu* bar = CCMenu::create();
 	bar->setContentHeight(TITLEBAR_HEIGHT);
 
-	CCLabelTTF* name = CCLabelTTF::create("TITLE GOES HERE", "tinos.ttf"_spr, 10.0f);
+	std::string title = extractTitle(head);
+	CCLabelTTF* name = CCLabelTTF::create(title.c_str(), "tinos.ttf"_spr, 10.0f);
 	name->setColor({ 0, 0, 0 });
 	name->setAnchorPoint({ 0.0f, 0.5f });
 	name->setPosition({ 9.0f, bar->getContentHeight() / 2 });
@@ -35,9 +44,13 @@ void WebviewRenderer::addTitlebar() {
 	CCSprite* sprite = dynamic_cast<CCSprite*>(getChild(button, 0));
 	CCScale9Sprite* bg = dynamic_cast<CCScale9Sprite*>(getChild(sprite, 0));
 	bg->setVisible(false);
+	bar->addChild(button);
+
 	button->setPosition({ bar->getContentWidth() - 15.0f, bar->getContentHeight() / 2});
 	button->m_scaleMultiplier = 1.2f;
-	bar->addChild(button);
+	button->addActivateCallback([this](CCObject* sender) {
+		this->closeAndCleanup();
+	});
 
 	auto layout = ColumnLayout::create()
 		->setAxisAlignment(AxisAlignment::Start)
@@ -63,8 +76,8 @@ void WebviewRenderer::renderHTMLChild(Element child) {
 	this->scope->leave();
 }
 
-void WebviewRenderer::renderHTML(std::vector<Element> children) {
-	for (auto& child : children) {
+void WebviewRenderer::renderHTML(std::vector<Element> body) {
+	for (auto& child : body) {
 		this->renderHTMLChild(child);
 	}
 
@@ -77,12 +90,13 @@ void WebviewRenderer::renderHTML(std::vector<Element> children) {
 // apply CSS styles
 // execute body tag scripts
 void WebviewRenderer::render(HTMLResult data) {
-	this->addTitlebar();
+	this->addTitlebar(data.head);
 	this->renderHTML(data.body);
 }
 
 // hehe fancy
 WebviewRenderer* WebviewRenderer::create(ZWebview* target) {
+	// UI //
 	auto container = CCMenu::create();
 	container->setContentSize(target->getContentSize());
 	container->setPosition({ 0.0f, 0.0f });
@@ -95,13 +109,16 @@ WebviewRenderer* WebviewRenderer::create(ZWebview* target) {
 	html_container_set_layout_default(content, true, TITLEBAR_HEIGHT);
 	container->addChild(content);
 
+	// CONSTRUCTOR //
 	auto ptr = new WebviewRenderer();
 	ptr->scope = new WebviewScope(content);
 	ptr->webview = target;
+
 	return ptr;
 }
 
-void WebviewRenderer::free() {
+void WebviewRenderer::closeAndCleanup() {
+	this->webview->removeFromParent();
 	delete this->scope;
 	delete this;
 }
