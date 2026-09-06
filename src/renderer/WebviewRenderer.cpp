@@ -41,8 +41,7 @@ void WebviewRenderer::addTitlebar(std::vector<Element> head) {
 	bar->addChild(name);
 
 	auto button = html_transpile_button(CREATE_EMPTY_ELEMENT(LXB_TAG_BUTTON, "X"));
-	auto bg = dynamic_cast<CCScale9Sprite*>(button->getChildByIDRecursive("button-bg"));
-	bg->setVisible(false);
+	button->m_bg->setVisible(false);
 	bar->addChild(button);
 
 	button->setPosition({ bar->getContentWidth() - 15.0f, bar->getContentHeight() / 2});

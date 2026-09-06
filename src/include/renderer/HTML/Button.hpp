@@ -5,17 +5,24 @@
 // this class started because of bg->scheduleOnce btw
 class WebviewButton : public CCMenuItemSpriteExtra {
 public:
-	static WebviewButton* create(ButtonSprite* sprite);
-	bool init(ButtonSprite* sprite);
-private:
-	void scheduleActivateEnd();
-
-	void onActivate(CCObject* sender);
-	void activateEnd(float dt);
-
+	ccColor3B m_bgColor;
+	ccColor3B m_bgClickColor;
+	ccColor3B m_bgHoverColor;
 	CCScale9Sprite* m_bg;
+	CCLabelTTF* m_label;
+
+	static WebviewButton* create(ButtonSprite* sprite);
+	bool initMembers(ButtonSprite* sprite);
+	bool init(ButtonSprite* sprite);
+	void selected();
+	void unselected();
+	void mouseEnter();
+	void mouseLeave();
+	void update(float dt);
+private:
+	bool m_isHovering;
 };
 
-CCMenuItemSpriteExtra* html_transpile_button(Element data);
+WebviewButton* html_transpile_button(Element data);
 
 #endif
