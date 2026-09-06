@@ -2,22 +2,10 @@
 #include <include/renderer/HTML/HTML.hpp>
 #include <include/Utils.hpp>
 
-// this class was all because of bg->scheduleOnce btw
-class ButtonActions : public CCNode {
-public:
-	static ButtonActions* create();
-	void setBackground(CCObject* sender);
-	void onActivate();
-	void scheduleActivateEnd();
-private:
-	void activateEnd();
-	// oo the m_ prefix looks nice
-	CCScale9Sprite* m_bg;
-};
-
-ButtonActions* ButtonActions::create() {
-	auto ptr = new ButtonActions();
-	if (ptr) {
+// WebviewButton //
+WebviewButton* WebviewButton::create(ButtonSprite* sprite) {
+	auto ptr = new WebviewButton();
+	if (ptr && ptr->init(sprite)) {
 		ptr->autorelease();
 		return ptr;
 	}
@@ -26,44 +14,38 @@ ButtonActions* ButtonActions::create() {
 	return nullptr;
 }
 
-void ButtonActions::setBackground(CCObject* sender) {
-	auto ext = dynamic_cast<CCMenuItemSpriteExtra*>(sender);
-	if (ext == nullptr) {
-		geode::log::debug("okay you have to be kidding");
-		return;
+bool WebviewButton::init(ButtonSprite* sprite) {
+	if (!CCMenuItemSpriteExtra::initWithNormalSprite(sprite, nullptr, nullptr, nullptr, nullptr)) {
+		return false;
 	}
 
-	auto bg = dynamic_cast<CCScale9Sprite*>(ext->getChildByIDRecursive("button-bg"));
+	auto bg = dynamic_cast<CCScale9Sprite*>(this->getChildByIDRecursive("button-bg"));
 	if (bg == nullptr) {
-		geode::log::debug("nice");
-		return;
+		return false;
 	}
 
 	this->m_bg = bg;
-	this->m_bg->addChild(this);
+	this->addActivateCallback([this](CCObject* sender) {
+		this->onActivate(sender);
+	});
+
+	return true;
 }
 
-void ButtonActions::onActivate() {
+void WebviewButton::onActivate(CCObject* sender) {
 	this->m_bg->setColor({ 213, 213, 216 });
+	this->scheduleActivateEnd();
 }
 
-void ButtonActions::activateEnd() {
+void WebviewButton::activateEnd(float dt) {
 	this->m_bg->setColor({ 233, 233, 237 });
-	this->removeFromParent();
 }
 
-void ButtonActions::scheduleActivateEnd() {
-	this->scheduleOnce(schedule_selector(ButtonActions::activateEnd), 0.08f);
+void WebviewButton::scheduleActivateEnd() {
+	this->scheduleOnce(schedule_selector(WebviewButton::activateEnd), 0.05f);
 }
 
-// there HAS to be a better way to do this
-void activateCB(CCObject* sender) {
-	auto actions = ButtonActions::create();
-	actions->setBackground(sender);
-	actions->onActivate();
-	actions->scheduleActivateEnd();
-}
-
+// TRANSPILER //
 CCMenuItemSpriteExtra* html_transpile_button(Element data) {
 	auto sprite = ButtonSprite::create(data.content.c_str(), "bigFont.fnt", "background.png"_spr, 0.4f);
 	sprite->removeChild(getChild(sprite, 0), true);
@@ -85,10 +67,10 @@ CCMenuItemSpriteExtra* html_transpile_button(Element data) {
 		return nullptr;
 	}
 
-	bg->setColor({ 233, 233, 237 });
 	bg->setID("button-bg");
+	bg->setColor({ 233, 233, 237 });
 
-	auto btn = CCMenuItemExt::createSpriteExtra(sprite, activateCB);
+	auto btn = WebviewButton::create(sprite);
 	btn->m_scaleMultiplier = 1.0f;
 
 	return btn;
