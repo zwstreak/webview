@@ -1,0 +1,9 @@
+#ifndef WEBVIEW_JS_ELEMENT_HPP
+#define WEBVIEW_JS_ELEMENT_HPP
+#include <quickjs.h>
+#include <include/renderer/WebviewRenderer.hpp>
+#include <include/js/Hooks.hpp>
+
+JSValue JS_NewElementFromNode(JSContext* ctx, Node* node);
+
+#endif
