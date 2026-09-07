@@ -1,5 +1,6 @@
 #include <include/parsers/HTMLParser.hpp>
 #include <lexbor/dom/interfaces/node.h>
+#include <include/Utils.hpp>
 
 // https://lexbor.com/documentation
 HTMLParser* HTMLParser::parse(const std::string &content) {
@@ -24,12 +25,6 @@ HTMLParser* HTMLParser::parse(const std::string &content) {
     }
 
     return new HTMLParser(document, head, body);
-}
-
-// UTILS //
-std::string stringFromLXBC(const lxb_char_t* c, size_t len) {
-    if (c == NULL || len == 0) return "";
-    return std::string(reinterpret_cast<const char*>(c), len);
 }
 
 // MAIN - CSS Extraction //

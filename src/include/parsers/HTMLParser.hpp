@@ -6,10 +6,11 @@
 #include <unordered_map>
 #include <string>
 
+using Attributes = std::unordered_map<std::string, std::string>;
 struct Element {
     lxb_tag_id_t tag;
     std::string content;
-    std::unordered_map<std::string, std::string> attributes;
+    Attributes attributes;
     std::vector<Element> children;
 };
 

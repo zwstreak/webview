@@ -11,13 +11,13 @@ public:
 	static WebviewRenderer* create(ZWebview* target);
 	void render(HTMLResult data);
 	void closeAndCleanup();
+	WebviewNodes* nodes;
 private:
 	void addTitlebar(std::vector<Element> head);
 	void renderHTML(std::vector<Element> body);
 	void renderHTMLChild(Element child);
 
 	WebviewScope* scope;
-	WebviewNodes* nodes;
 	ZWebview* webview;
 	WebviewRenderer() = default;
 };

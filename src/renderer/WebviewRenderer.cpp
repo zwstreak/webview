@@ -63,6 +63,7 @@ void WebviewRenderer::addTitlebar(std::vector<Element> head) {
 
 void WebviewRenderer::renderHTMLChild(Element child) {
 	CCNode* node = html_transpile_element(child);
+	this->nodes->add({ child, node });
 	this->scope->addChild(node);
 
 	if (child.children.size() < 1) {

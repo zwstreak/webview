@@ -31,7 +31,7 @@ bool ZWebview::run() {
 
     HTMLResult result = parser->getResult();
     renderer->render(result);
-
+    
     return true;
 }
 

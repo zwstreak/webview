@@ -5,16 +5,23 @@
 #include <include/parsers/HTMLParser.hpp>
 #include <Geode/cocos/base_nodes/CCNode.h>
 
-// send nodes (sorry)
+// RenderedNode //
 struct RenderedNode {
 	cocos2d::CCNode* node;
+	std::vector<std::string> classList;
 	std::string id;
-	Element element;
+	std::string tagName;
+	Attributes attributes;
+	lxb_tag_id_t tag;
+
+	RenderedNode(Element element, cocos2d::CCNode* node);
 };
 
+// WebviewNodes //
 class WebviewNodes {
 public:
 	std::optional<RenderedNode> getById(std::string id);
+	void add(RenderedNode node);
 	WebviewNodes();
 private:
 	std::vector<RenderedNode> nodes;
