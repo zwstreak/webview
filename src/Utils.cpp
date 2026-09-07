@@ -7,7 +7,7 @@ CCNode* getChild(CCNode* parent, unsigned int at) {
 }
 
 std::vector<std::string> getClassList(Attributes attributes) {
-	std::string className = getAttribute("className", attributes);
+	std::string className = getAttribute("class", attributes);
 	std::stringstream ss(className);
 	std::string item;
 	std::vector<std::string> list;
@@ -16,6 +16,10 @@ std::vector<std::string> getClassList(Attributes attributes) {
 	}
 
 	return list;
+}
+
+bool hasClassName(std::string find, std::vector<std::string> classList) {
+	return std::find(classList.begin(), classList.end(), find) != classList.end();
 }
 
 std::string getAttribute(std::string key, Attributes attributes) {

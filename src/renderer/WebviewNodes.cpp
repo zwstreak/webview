@@ -1,5 +1,6 @@
 #include <include/renderer/WebviewNodes.hpp>
 #include <include/Utils.hpp>
+#include <ranges>
 
 // TODO: move RenderedNode to a separate file?
 // RenderedNode //
@@ -24,12 +25,20 @@ void WebviewNodes::add(RenderedNode node) {
 }
 
 std::optional<RenderedNode> WebviewNodes::getById(std::string id) {
-	auto it = std::ranges::find_if(this->nodes, [&id](const RenderedNode& node) {
-		return node.id == id;
-	});
+	auto match = this->nodes
+		| std::views::filter([&id](const RenderedNode& node) { return node.id == id; })
+		| std::views::take(1);
 
-	if (it != this->nodes.end()) return *it;
+	if (!match.empty()) {
+		return match.front();
+	}
 	return std::nullopt;
+}
+
+std::vector<RenderedNode> WebviewNodes::getByClassName(std::string name) {
+	return this->nodes
+		| std::views::filter([&name](const RenderedNode& node) { return hasClassName(name, node.classList); })
+		| std::ranges::to<std::vector>();
 }
 
 WebviewNodes::WebviewNodes() {

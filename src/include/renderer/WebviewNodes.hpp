@@ -21,6 +21,7 @@ struct RenderedNode {
 class WebviewNodes {
 public:
 	std::optional<RenderedNode> getById(std::string id);
+	std::vector<RenderedNode> getByClassName(std::string name);
 	void add(RenderedNode node);
 	WebviewNodes();
 private:
