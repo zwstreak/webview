@@ -35,7 +35,7 @@ bool ZWebview::run() {
 
     JSEngine* engine = new JSEngine(renderer->nodes);
     engine->execute("console.log(\"Hello world!\");");
-    delete engine;
+    engine->free();
 
     return true;
 }
