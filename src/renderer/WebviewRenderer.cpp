@@ -110,13 +110,16 @@ WebviewRenderer* WebviewRenderer::create(ZWebview* target) {
 	// CONSTRUCTOR //
 	auto ptr = new WebviewRenderer();
 	ptr->scope = new WebviewScope(content);
+	ptr->nodes = new WebviewNodes();
 	ptr->webview = target;
 
 	return ptr;
 }
 
+// Note: WebviewRenderer won't be freed until it is closed, meaning this->nodes will exist
 void WebviewRenderer::closeAndCleanup() {
 	this->webview->removeFromParent();
 	delete this->scope;
+	delete this->nodes;
 	delete this;
 }

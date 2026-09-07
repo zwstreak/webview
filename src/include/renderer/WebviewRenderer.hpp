@@ -1,6 +1,7 @@
 #ifndef WEBVIEW_RENDERER_HPP
 #define WEBVIEW_RENDERER_HPP
 #include <include/renderer/Scope.hpp>
+#include <include/renderer/WebviewNodes.hpp>
 #include <include/parsers/HTMLParser.hpp>
 #include <vector>
 #include <Webview.hpp>
@@ -16,6 +17,7 @@ private:
 	void renderHTMLChild(Element child);
 
 	WebviewScope* scope;
+	WebviewNodes* nodes;
 	ZWebview* webview;
 	WebviewRenderer() = default;
 };
