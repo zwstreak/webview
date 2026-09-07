@@ -5,12 +5,16 @@
 
 class JSEngine {
 public:
+	static JSEngine* get();
+	static JSClassID element_id;
+	WebviewNodes* nodes;
+
 	void execute(std::string script);
 	void init();
 	void free();
 	JSEngine(WebviewNodes* nodes);
 private:
-	WebviewNodes* nodes;
+	static JSEngine* _instance;
 	JSRuntime* runtime;
 	JSContext* ctx;
 };

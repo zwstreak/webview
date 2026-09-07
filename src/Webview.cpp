@@ -34,7 +34,7 @@ bool ZWebview::run() {
     renderer->render(result);
 
     JSEngine* engine = new JSEngine(renderer->nodes);
-    engine->execute("console.log(\"Hello world!\");");
+    engine->execute("const element = document.getElementById('register'); console.warn(element.innerHTML); element.innerHTML = \"Hello\"");
     engine->free();
 
     return true;

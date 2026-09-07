@@ -6,27 +6,29 @@
 #include <Geode/cocos/base_nodes/CCNode.h>
 
 // RenderedNode //
-struct RenderedNode {
-	cocos2d::CCNode* node;
+struct Node {
+	cocos2d::CCNode* cocos;
 	std::vector<std::string> classList;
 	std::string id;
 	std::string tagName;
 	Attributes attributes;
 	lxb_tag_id_t tag;
+	std::string content;
 
-	RenderedNode(Element element, cocos2d::CCNode* node);
+	Node(Element element, cocos2d::CCNode* cocos);
 };
 
 // WebviewNodes //
 class WebviewNodes {
 public:
-	std::optional<RenderedNode> getById(std::string id);
-	std::vector<RenderedNode> getByClassName(std::string name);
-	std::vector<RenderedNode> getByTagName(std::string tag);
-	void add(RenderedNode node);
+	std::optional<Node*> getById(std::string id);
+	std::vector<Node*> getByClassName(std::string name);
+	std::vector<Node*> getByTagName(std::string tag);
+	void add(Element element, cocos2d::CCNode* cocos);
+	void free();
 	WebviewNodes();
 private:
-	std::vector<RenderedNode> nodes;
+	std::vector<Node*> nodes;
 };
 
 #endif

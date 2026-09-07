@@ -3,9 +3,9 @@
 #include "Include.hpp"
 
 namespace hooks::console {
-	JSValue log(JS_HOOK_PARAMS);
-	JSValue warn(JS_HOOK_PARAMS);
-	JSValue error(JS_HOOK_PARAMS);
+	JSValue log(JS_PARAMS);
+	JSValue warn(JS_PARAMS);
+	JSValue error(JS_PARAMS);
 }
 
 #endif

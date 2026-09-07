@@ -63,7 +63,7 @@ void WebviewRenderer::addTitlebar(std::vector<Element> head) {
 
 void WebviewRenderer::renderHTMLChild(Element child) {
 	CCNode* node = html_transpile_element(child);
-	this->nodes->add({ child, node });
+	this->nodes->add(child, node);
 	this->scope->addChild(node);
 
 	if (child.children.size() < 1) {
@@ -120,7 +120,7 @@ WebviewRenderer* WebviewRenderer::create(ZWebview* target) {
 // Note: WebviewRenderer won't be freed until it is closed, meaning this->nodes will exist
 void WebviewRenderer::closeAndCleanup() {
 	this->webview->removeFromParent();
+	this->nodes->free();
 	delete this->scope;
-	delete this->nodes;
 	delete this;
 }
