@@ -16,7 +16,6 @@ else()
     add_compile_definitions(WEBVIEW_DEBUG_MODE=0)
 endif()
 
-include(FetchContent)
 project(Webview VERSION 1.0.0)
 
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
@@ -32,14 +31,24 @@ else()
     message(STATUS "Found Geode: $ENV{GEODE_SDK}")
 endif()
 
+include(FetchContent)
+
 ## PACKAGES (Fetch) ##
 # Lexbor (HTML, CSS Parser)
 FetchContent_Declare(
-  lexbor
-  GIT_REPOSITORY https://github.com/lexbor/lexbor
-  GIT_TAG v3.0.0
+    lexbor
+    GIT_REPOSITORY https://github.com/lexbor/lexbor
+    GIT_TAG master
 )
+# QuickJS
+FetchContent_Declare(
+    quickjs_ng
+    GIT_REPOSITORY https://github.com/quickjs-ng/quickjs
+    GIT_TAG master
+)
+
 FetchContent_MakeAvailable(lexbor)
+FetchContent_MakeAvailable(quickjs_ng)
 ##         ##
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
@@ -47,4 +56,5 @@ setup_geode_mod(${PROJECT_NAME})
 
 ## PACKAGES (Linking) ##
 target_link_libraries(${PROJECT_NAME} lexbor_static)
+target_link_libraries(${PROJECT_NAME} qjs)
 ##                    ##
