@@ -22,6 +22,7 @@ class WebviewNodes {
 public:
 	std::optional<RenderedNode> getById(std::string id);
 	std::vector<RenderedNode> getByClassName(std::string name);
+	std::vector<RenderedNode> getByTagName(std::string tag);
 	void add(RenderedNode node);
 	WebviewNodes();
 private:

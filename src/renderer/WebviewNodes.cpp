@@ -29,15 +29,19 @@ std::optional<RenderedNode> WebviewNodes::getById(std::string id) {
 		| std::views::filter([&id](const RenderedNode& node) { return node.id == id; })
 		| std::views::take(1);
 
-	if (!match.empty()) {
-		return match.front();
-	}
+	if (!match.empty()) return match.front();
 	return std::nullopt;
 }
 
 std::vector<RenderedNode> WebviewNodes::getByClassName(std::string name) {
 	return this->nodes
 		| std::views::filter([&name](const RenderedNode& node) { return hasClassName(name, node.classList); })
+		| std::ranges::to<std::vector>();
+}
+
+std::vector<RenderedNode> WebviewNodes::getByTagName(std::string tag) {
+	return this->nodes
+		| std::views::filter([&tag](const RenderedNode& node) { return node.tagName == tag; })
 		| std::ranges::to<std::vector>();
 }
 
