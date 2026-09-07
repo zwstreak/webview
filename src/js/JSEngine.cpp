@@ -2,7 +2,7 @@
 #include <include/js/Hooks.hpp>
 
 void JSEngine::execute(std::string script) {
-	const char* code = "console.log('Hello world!');";
+	const char* code = "console.log('Hello world!');\nconsole.warn('Please no');\nconsole.error('Oop!');";
 	JSValue value = JS_Eval(this->ctx, code, std::strlen(code), "test.js", JS_EVAL_TYPE_GLOBAL);
 	JS_FreeValue(this->ctx, value);
 }
