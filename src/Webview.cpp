@@ -1,7 +1,6 @@
 #include <Geode/utils/file.hpp>
 #include <include/parsers/HTMLParser.hpp>
 #include <include/renderer/WebviewRenderer.hpp>
-#include <include/js/JSEngine.hpp>
 #include <Webview.hpp>
 
 #include <filesystem>
@@ -32,10 +31,6 @@ bool ZWebview::run() {
 
     HTMLResult result = parser->getResult();
     renderer->render(result);
-
-    JSEngine* engine = new JSEngine(renderer->nodes);
-    engine->execute("const element = document.getElementById('register'); console.warn(element.innerHTML); element.innerHTML = \"Hello\"");
-    engine->free();
 
     return true;
 }

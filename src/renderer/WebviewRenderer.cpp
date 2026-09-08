@@ -62,6 +62,11 @@ void WebviewRenderer::addTitlebar(std::vector<Element> head) {
 }
 
 void WebviewRenderer::renderHTMLChild(Element child) {
+	if (child.tag == LXB_TAG_SCRIPT) {
+		this->executeScript(child);
+		return;
+	}
+
 	CCNode* node = html_transpile_element(child);
 	this->nodes->add(child, node);
 	this->scope->addChild(node);
@@ -84,12 +89,30 @@ void WebviewRenderer::renderHTML(std::vector<Element> body) {
 	this->webview->updateLayout();
 }
 
+void WebviewRenderer::executeScript(Element script) {
+	if (script.attributes.contains("src")) {
+		geode::log::error("scripts with \"src\" attribute are currently unsupported.");
+		return;
+	}
+
+	if (script.content.empty()) return;
+	this->js->execute(script.content);
+}
+
+void WebviewRenderer::executeJS(std::vector<Element> data) {
+	for (auto& child : data) {
+		if (child.tag != LXB_TAG_SCRIPT) continue;
+		this->executeScript(child);
+	}
+}
+
 // execute head tag scripts
 // render HTML
 // apply CSS styles
 // execute body tag scripts
 void WebviewRenderer::render(HTMLResult data) {
 	this->addTitlebar(data.head);
+	this->executeJS(data.head);
 	this->renderHTML(data.body);
 }
 
@@ -112,6 +135,7 @@ WebviewRenderer* WebviewRenderer::create(ZWebview* target) {
 	auto ptr = new WebviewRenderer();
 	ptr->scope = new WebviewScope(content);
 	ptr->nodes = new WebviewNodes();
+	ptr->js = new JSEngine(ptr->nodes);
 	ptr->webview = target;
 
 	return ptr;
@@ -120,6 +144,7 @@ WebviewRenderer* WebviewRenderer::create(ZWebview* target) {
 // Note: WebviewRenderer won't be freed until it is closed, meaning this->nodes will exist
 void WebviewRenderer::closeAndCleanup() {
 	this->webview->removeFromParent();
+	this->js->free();
 	this->nodes->free();
 	delete this->scope;
 	delete this;

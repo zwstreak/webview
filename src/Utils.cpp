@@ -1,4 +1,5 @@
 #include <include/Utils.hpp>
+#include <ranges>
 
 CCNode* getChild(CCNode* parent, unsigned int at) {
 	CCArray* children = parent->getChildren();
