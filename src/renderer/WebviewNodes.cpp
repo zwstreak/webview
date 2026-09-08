@@ -12,17 +12,21 @@ std::string getTagName(lxb_tag_id_t tag) {
 
 Node::Node(Element element, cocos2d::CCNode* cocos) {
 	this->cocos = cocos;
-	this->classList = getClassList(element.attributes);
-	this->id = getAttribute("id", element.attributes);
-	this->tagName = getTagName(element.tag);
-	this->attributes = element.attributes;
-	this->tag = element.tag;
-	this->content = element.content;
+	this->element = element;
+	this->classList = getClassList(this->element.attributes);
+	this->id = getAttribute("id", this->element.attributes);
+	this->tagName = getTagName(this->element.tag);
+	this->attributes = this->element.attributes;
+	this->tag = this->element.tag;
+	this->content = this->element.content;
+	this->childrenNodes = {};
 }
 
 // WebviewNodes //
-void WebviewNodes::add(Element element, cocos2d::CCNode* cocos) {
-	this->nodes.push_back(new Node(element, cocos));
+Node* WebviewNodes::add(Element element, cocos2d::CCNode* cocos) {
+	auto node = new Node(element, cocos);
+	this->nodes.push_back(node);
+	return node;
 }
 
 void WebviewNodes::free() {

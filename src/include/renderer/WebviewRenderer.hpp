@@ -16,8 +16,8 @@ public:
 private:
 	void addTitlebar(std::vector<Element> head);
 	
-	void renderHTML(std::vector<Element> body);
-	void renderHTMLChild(Element child);
+	void renderHTML(std::vector<Element> body, Node* parent = nullptr);
+	void renderHTMLChild(Element child, Node* parent = nullptr);
 
 	void executeScript(Element script);
 	void executeJS(std::vector<Element> data);

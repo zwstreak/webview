@@ -61,30 +61,33 @@ void WebviewRenderer::addTitlebar(std::vector<Element> head) {
 	addBackground(bar, 0.0f, { 240, 240, 240 });
 }
 
-void WebviewRenderer::renderHTMLChild(Element child) {
+void WebviewRenderer::renderHTMLChild(Element child, Node* parent) {
 	if (child.tag == LXB_TAG_SCRIPT) {
 		this->executeScript(child);
 		return;
 	}
 
 	CCNode* node = html_transpile_element(child);
-	this->nodes->add(child, node);
-	this->scope->addChild(node);
+	Node* rendered = this->nodes->add(child, node);
+	if (parent != nullptr) {
+		parent->childrenNodes.push_back(rendered);
+	}
 
+	this->scope->addChild(node);
 	if (child.children.size() < 1) {
 		return;
 	}
 
 	this->scope->enter(node);
-	this->renderHTML(child.children);
+	this->renderHTML(child.children, rendered);
 	this->scope->leave();
 }
 
-void WebviewRenderer::renderHTML(std::vector<Element> body) {
+void WebviewRenderer::renderHTML(std::vector<Element> body, Node* parent) {
 	for (auto& child : body) {
-		this->renderHTMLChild(child);
+		this->renderHTMLChild(child, parent);
 	}
-
+	
 	this->scope->updateLayout();
 	this->webview->updateLayout();
 }
