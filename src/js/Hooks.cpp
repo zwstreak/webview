@@ -8,6 +8,7 @@ void JSHooks::registerDocument(JSContext* ctx) {
 	JSValue global = JS_GetGlobalObject(ctx);
 	JSValue document = JS_NewObject(ctx);
 	JS_SetPropertyStr(ctx, document, "getElementById", JS_HOOK_FUNC(document, getElementById));
+	JS_SetPropertyStr(ctx, document, "getElementsByClassName", JS_HOOK_FUNC(document, getElementsByClassName));
 	JS_SetPropertyStr(ctx, global, "document", document);
 	JS_FreeValue(ctx, global);
 }

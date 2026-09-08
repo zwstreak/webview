@@ -4,6 +4,7 @@
 
 namespace hooks::document {
 	JSValue getElementById(JS_PARAMS);
+	JSValue getElementsByClassName(JS_PARAMS);
 }
 
 #endif

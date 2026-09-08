@@ -17,8 +17,11 @@
 			<button>Quick Log in</button>
 		</div>
 
+		<!--TODO: add "Ctrl + Q" keybind support to exit the webview-->
 		<script>
-			console.log("Hello world!");
+			const tests = document.getElementsByClassName("test");
+			console.warn(tests.length);
+			console.warn(tests[0].innerHTML);
 		</script>
 	</body>
 </html>
