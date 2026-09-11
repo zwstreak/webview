@@ -3,7 +3,7 @@
 #include <include/renderer/HTML/Containers.hpp>
 #include <include/renderer/HTML/Button.hpp>
 
-CCNode* html_transpile_element(Element element) {
+CCNode* html_transpile_element(DOMNode element) {
 	if (html_element_is_text(element)) {
 		return html_transpile_text(element);
 	}

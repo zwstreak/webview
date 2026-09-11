@@ -28,7 +28,7 @@ HTMLParser* HTMLParser::parse(const std::string &content) {
 }
 
 // MAIN - CSS Extraction //
-Stylesheet extractLinkCSS(Element element) {
+Stylesheet extractLinkCSS(DOMNode element) {
     auto rel_it = element.attributes.find("rel");
     auto href_it = element.attributes.find("href");
     if (rel_it == element.attributes.end() || href_it == element.attributes.end()) {
@@ -42,7 +42,7 @@ Stylesheet extractLinkCSS(Element element) {
     return { true, href_it->second };
 }
 
-std::vector<Stylesheet> extractStylesheets(std::vector<Element> head) {
+std::vector<Stylesheet> extractStylesheets(std::vector<DOMNode> head) {
     std::vector<Stylesheet> stylesheets;
     for (auto& child : head) {
         if (child.tag != LXB_TAG_LINK && child.tag != LXB_TAG_STYLE) {
@@ -64,7 +64,6 @@ std::vector<Stylesheet> extractStylesheets(std::vector<Element> head) {
 }
 
 // MAIN - Children Extraction //
-// ^^^ basically prettifying lexbor
 std::unordered_map<std::string, std::string> getAttributes(lxb_dom_element_t* element) {
     lxb_dom_attr* attribute = lxb_dom_element_first_attribute(element);
     std::unordered_map<std::string, std::string> attributes;
@@ -85,14 +84,35 @@ std::unordered_map<std::string, std::string> getAttributes(lxb_dom_element_t* el
     return attributes;
 }
 
-// sorry the comments was me miserably failing at the attempt of prettifiying it (talking about // X //)
-// well... on a second thought it kinda works
-// TODO: tag_id does not support custom elements for now, and also the prefix
-std::vector<Element> getChildrenOfNode(lxb_dom_node_t* target) {
+void parseText(lxb_dom_node_t* node, std::vector<DOMNode>& elements) {
+    size_t content_len;
+    const lxb_char_t* content_lxb = lxb_dom_node_text_content(node, &content_len);
+    std::string content = stringFromLXBC(content_lxb, content_len);
+
+    if (isWhitespace(content)) {
+        return;
+    }
+
+    elements.push_back({
+        .type = DOM_TEXT,
+        .tag = LXB_TAG__TEXT,
+        .content = content,
+        .attributes = {},
+        .children = {}
+    });
+}
+
+std::vector<DOMNode> getChildrenOfNode(lxb_dom_node_t* target) {
     lxb_dom_node_t* node = lxb_dom_node_first_child(target);
-    std::vector<Element> elements = {};
+    std::vector<DOMNode> elements = {};
 
     while (node != NULL) {
+        if (node->type == LXB_DOM_NODE_TYPE_TEXT) {
+            parseText(node, elements);
+            node = lxb_dom_node_next(node);
+            continue;
+        }
+
         if (node->type != LXB_DOM_NODE_TYPE_ELEMENT) {
             node = lxb_dom_node_next(node);
             continue;
@@ -116,9 +136,10 @@ std::vector<Element> getChildrenOfNode(lxb_dom_node_t* target) {
         std::unordered_map<std::string, std::string> attributes = getAttributes(element);
         
         // CHILDREN //
-        std::vector<Element> children = getChildrenOfNode(node);
+        std::vector<DOMNode> children = getChildrenOfNode(node);
 
-        elements.push_back({ 
+        elements.push_back({
+            .type = DOM_ELEMENT,
             .tag = tag_id,
             .content = content,
             .attributes = attributes,
@@ -132,7 +153,7 @@ std::vector<Element> getChildrenOfNode(lxb_dom_node_t* target) {
 
 // OTHER (MAIN) //
 HTMLResult HTMLParser::getResult() {
-    std::vector<Element> head_children = getChildrenOfNode(this->head);
+    std::vector<DOMNode> head_children = getChildrenOfNode(this->head);
     HTMLResult result = {
         .body = getChildrenOfNode(this->body),
         .head = head_children,

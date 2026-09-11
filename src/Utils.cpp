@@ -36,3 +36,9 @@ std::string stringFromLXBC(const lxb_char_t* c, size_t len) {
 	if (c == NULL || len == 0) return "";
 	return std::string(reinterpret_cast<const char*>(c), len);
 }
+
+bool isWhitespace(std::string data) {
+	return std::ranges::all_of(data, [](char c) {
+		return std::isspace(c);
+	});
+}

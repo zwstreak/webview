@@ -14,13 +14,13 @@ public:
 	void closeAndCleanup();
 	WebviewNodes* nodes;
 private:
-	void addTitlebar(std::vector<Element> head);
+	void addTitlebar(std::vector<DOMNode> head);
 	
-	void renderHTML(std::vector<Element> body, Node* parent = nullptr);
-	void renderHTMLChild(Element child, Node* parent = nullptr);
+	void renderHTML(std::vector<DOMNode> body, Node* parent = nullptr);
+	void renderHTMLChild(DOMNode child, Node* parent = nullptr);
 
-	void executeScript(Element script);
-	void executeJS(std::vector<Element> data);
+	void executeScript(DOMNode script);
+	void executeJS(std::vector<DOMNode> data);
 
 	JSEngine* js;
 	WebviewScope* scope;

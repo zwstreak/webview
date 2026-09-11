@@ -35,11 +35,11 @@ void html_container_set_layout_default(CCNode* node, bool webview, float offset)
     node->setLayout(layout);
 }
 
-bool html_element_is_container(Element data) {
+bool html_element_is_container(DOMNode data) {
     return std::find(containerElements.begin(), containerElements.end(), data.tag) != containerElements.end();
 }
 
 // yup thats it
-CCNode* html_transpile_container(Element data) {
+CCNode* html_transpile_container(DOMNode data) {
     return CCMenu::create();
 }

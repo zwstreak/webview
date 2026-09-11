@@ -5,8 +5,8 @@
 
 #define ATOM_FLAGS (JS_PROP_HAS_GET | JS_PROP_HAS_SET | JS_PROP_CONFIGURABLE | JS_PROP_WRITABLE)
 
-// Element Utils //
-// TODO: HTMLParser Element can be a text node or a html node dumbass
+// DOMNode Utils //
+// TODO: HTMLParser DOMNode can be a text node or a html node dumbass
 // ughhhh what was i doing
 std::string stringifyHTML(Node* node) {
 	std::string children = node->content;

@@ -15,9 +15,9 @@ struct Node {
 	lxb_tag_id_t tag;
 	std::string content;
 	std::vector<Node*> childrenNodes;
-	Element element;
+	DOMNode element;
 
-	Node(Element element, cocos2d::CCNode* cocos);
+	Node(DOMNode element, cocos2d::CCNode* cocos);
 };
 
 // WebviewNodes //
@@ -26,7 +26,7 @@ public:
 	std::optional<Node*> getById(std::string id);
 	std::vector<Node*> getByClassName(std::string name);
 	std::vector<Node*> getByTagName(std::string tag);
-	Node* add(Element element, cocos2d::CCNode* cocos);
+	Node* add(DOMNode element, cocos2d::CCNode* cocos);
 	void free();
 	WebviewNodes();
 private:

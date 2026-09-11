@@ -10,7 +10,7 @@ std::string getTagName(lxb_tag_id_t tag) {
 	return stringFromLXBC(tag_name, tag_len);
 }
 
-Node::Node(Element element, cocos2d::CCNode* cocos) {
+Node::Node(DOMNode element, cocos2d::CCNode* cocos) {
 	this->cocos = cocos;
 	this->element = element;
 	this->classList = getClassList(this->element.attributes);
@@ -23,7 +23,7 @@ Node::Node(Element element, cocos2d::CCNode* cocos) {
 }
 
 // WebviewNodes //
-Node* WebviewNodes::add(Element element, cocos2d::CCNode* cocos) {
+Node* WebviewNodes::add(DOMNode element, cocos2d::CCNode* cocos) {
 	auto node = new Node(element, cocos);
 	this->nodes.push_back(node);
 	return node;

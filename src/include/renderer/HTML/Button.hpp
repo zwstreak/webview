@@ -23,6 +23,6 @@ private:
 	bool m_isHovering;
 };
 
-WebviewButton* html_transpile_button(Element data);
+WebviewButton* html_transpile_button(DOMNode data);
 
 #endif

@@ -10,21 +10,21 @@ std::unordered_map<lxb_tag_id_t, uint8_t> textElements = {
 	{ LXB_TAG_H6, 10 }
 };
 
-uint8_t getFontSize(Element element) {
+uint8_t getFontSize(DOMNode element) {
 	auto it = textElements.find(element.tag);
 	if (it == textElements.end()) return 0;
 	return it->second;
 }
 
 // im so smart
-bool html_element_is_text(Element element) {
+bool html_element_is_text(DOMNode element) {
 	return getFontSize(element) != 0;
 }
 
 // 4 hours of trying stuff out btw
 // i couldn't make CCLabelBMFont work with font sizes, i tried everything
 // and CCLabelTTF is so slow, but i guess you gotta do what you gotta do
-CCNode* html_transpile_text(Element element) {
+CCNode* html_transpile_text(DOMNode element) {
 	auto label = CCLabelTTF::create(element.content.c_str(), "tinos.ttf"_spr, getFontSize(element) - 4.0f);
 	label->setColor({ 0, 0, 0 });
 	return label;

@@ -5,7 +5,7 @@
 #include <include/renderer/HTML/Button.hpp>
 #include <include/Utils.hpp>
 
-#define CREATE_EMPTY_ELEMENT(tag, content) { tag, content, {}, {} }
+#define CREATE_EMPTY_ELEMENT(tag, content) { DOM_ELEMENT, tag, content, {}, {} }
 #define TITLEBAR_HEIGHT 14
 
 void addBackground(CCNode* parent, float yPos, ccColor3B color = {255,255,255}) {
@@ -19,8 +19,8 @@ void addBackground(CCNode* parent, float yPos, ccColor3B color = {255,255,255}) 
 	parent->addChild(bg);
 }
 
-std::string extractTitle(std::vector<Element> head) {
-	auto it = std::find_if(head.begin(), head.end(), [](const Element& element) {
+std::string extractTitle(std::vector<DOMNode> head) {
+	auto it = std::find_if(head.begin(), head.end(), [](const DOMNode& element) {
 		return element.tag == LXB_TAG_TITLE;
 	});
 
@@ -29,7 +29,7 @@ std::string extractTitle(std::vector<Element> head) {
 
 // EVERYTHING is a mess omg
 // btw one speck of dust will break the whole code
-void WebviewRenderer::addTitlebar(std::vector<Element> head) {
+void WebviewRenderer::addTitlebar(std::vector<DOMNode> head) {
 	std::string title = extractTitle(head);
 	auto bar = CCMenu::create();
 	bar->setContentHeight(TITLEBAR_HEIGHT);
@@ -61,13 +61,23 @@ void WebviewRenderer::addTitlebar(std::vector<Element> head) {
 	addBackground(bar, 0.0f, { 240, 240, 240 });
 }
 
-void WebviewRenderer::renderHTMLChild(Element child, Node* parent) {
+void WebviewRenderer::renderHTMLChild(DOMNode child, Node* parent) {
 	if (child.tag == LXB_TAG_SCRIPT) {
 		this->executeScript(child);
 		return;
 	}
 
+	if (child.type == DOM_TEXT) {
+		geode::log::error("TODO: render DOM_TEXT nodes");
+		return;
+	}
+
 	CCNode* node = html_transpile_element(child);
+	if (node == nullptr) {
+		geode::log::error("Node with the tag id '{}' cannot be rendered because it is not implemented.", child.tag);
+		return;
+	}
+
 	Node* rendered = this->nodes->add(child, node);
 	if (parent != nullptr) {
 		parent->childrenNodes.push_back(rendered);
@@ -83,7 +93,7 @@ void WebviewRenderer::renderHTMLChild(Element child, Node* parent) {
 	this->scope->leave();
 }
 
-void WebviewRenderer::renderHTML(std::vector<Element> body, Node* parent) {
+void WebviewRenderer::renderHTML(std::vector<DOMNode> body, Node* parent) {
 	for (auto& child : body) {
 		this->renderHTMLChild(child, parent);
 	}
@@ -92,7 +102,7 @@ void WebviewRenderer::renderHTML(std::vector<Element> body, Node* parent) {
 	this->webview->updateLayout();
 }
 
-void WebviewRenderer::executeScript(Element script) {
+void WebviewRenderer::executeScript(DOMNode script) {
 	if (script.attributes.contains("src")) {
 		geode::log::error("scripts with \"src\" attribute are currently unsupported.");
 		return;
@@ -102,7 +112,7 @@ void WebviewRenderer::executeScript(Element script) {
 	this->js->execute(script.content);
 }
 
-void WebviewRenderer::executeJS(std::vector<Element> data) {
+void WebviewRenderer::executeJS(std::vector<DOMNode> data) {
 	for (auto& child : data) {
 		if (child.tag != LXB_TAG_SCRIPT) continue;
 		this->executeScript(child);

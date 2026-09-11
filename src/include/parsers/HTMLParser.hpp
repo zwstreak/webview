@@ -6,12 +6,18 @@
 #include <unordered_map>
 #include <string>
 
+enum NodeType {
+    DOM_ELEMENT,
+    DOM_TEXT
+};
+
 using Attributes = std::unordered_map<std::string, std::string>;
-struct Element {
+struct DOMNode {
+    NodeType type;
     lxb_tag_id_t tag;
     std::string content;
     Attributes attributes;
-    std::vector<Element> children;
+    std::vector<DOMNode> children;
 };
 
 struct Stylesheet {
@@ -20,8 +26,8 @@ struct Stylesheet {
 };
 
 struct HTMLResult {
-    std::vector<Element> body;
-    std::vector<Element> head;
+    std::vector<DOMNode> body;
+    std::vector<DOMNode> head;
     std::vector<Stylesheet> stylesheets;
 };
 

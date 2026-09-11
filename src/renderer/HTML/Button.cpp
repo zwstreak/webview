@@ -84,7 +84,7 @@ void WebviewButton::update(float dt) {
 }
 
 // TRANSPILER //
-WebviewButton* html_transpile_button(Element data) {
+WebviewButton* html_transpile_button(DOMNode data) {
 	auto sprite = ButtonSprite::create(data.content.c_str(), "bigFont.fnt", "background.png"_spr, 0.4f);
 	sprite->removeChild(getChild(sprite, 0), true);
 	
