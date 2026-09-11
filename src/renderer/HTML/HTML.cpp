@@ -3,8 +3,9 @@
 #include <include/renderer/HTML/Containers.hpp>
 #include <include/renderer/HTML/Button.hpp>
 
+// TODO: reference DOMNode instead of creating a copy everytime
 CCNode* html_transpile_element(DOMNode element) {
-	if (html_element_is_text(element)) {
+	if (html_element_is_text(element.tag)) {
 		return html_transpile_text(element);
 	}
 
@@ -18,4 +19,12 @@ CCNode* html_transpile_element(DOMNode element) {
 	}
 
 	return nullptr;
+}
+
+void html_post_process(Node* node) {
+	if (html_element_is_text(node->tag)) {
+		return html_post_process_text(node);
+	}
+
+	geode::log::debug("postprocess event does not exist for element with tag name '{}'", node->tagName);
 }

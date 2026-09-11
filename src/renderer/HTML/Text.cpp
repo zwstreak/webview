@@ -1,4 +1,6 @@
 #include <include/renderer/HTML/Text.hpp>
+#include <include/renderer/HTML/Containers.hpp>
+#include <include/Utils.hpp>
 
 std::unordered_map<lxb_tag_id_t, uint8_t> textElements = {
 	{ LXB_TAG_P, 16 },
@@ -10,22 +12,32 @@ std::unordered_map<lxb_tag_id_t, uint8_t> textElements = {
 	{ LXB_TAG_H6, 10 }
 };
 
-uint8_t getFontSize(DOMNode element) {
-	auto it = textElements.find(element.tag);
+uint8_t getFontSize(lxb_tag_id_t id) {
+	auto it = textElements.find(id);
 	if (it == textElements.end()) return 0;
 	return it->second;
 }
 
 // im so smart
-bool html_element_is_text(DOMNode element) {
-	return getFontSize(element) != 0;
+bool html_element_is_text(lxb_tag_id_t id) {
+	return getFontSize(id) != 0;
 }
 
-// 4 hours of trying stuff out btw
-// i couldn't make CCLabelBMFont work with font sizes, i tried everything
-// and CCLabelTTF is so slow, but i guess you gotta do what you gotta do
 CCNode* html_transpile_text(DOMNode element) {
-	auto label = CCLabelTTF::create(element.content.c_str(), "tinos.ttf"_spr, getFontSize(element) - 4.0f);
+	CCMenu* wrapper = CCMenu::create();
+	return wrapper;
+}
+
+void html_post_process_text(Node* node) {
+	CCMenu* wrapper = static_cast<CCMenu*>(node->cocos);
+	CCLabelTTF* label = static_cast<CCLabelTTF*>(getChild(wrapper, 0));
+	label->setFontSize(getFontSize(node->tag) - 4.0f);
+	wrapper->setContentSize(label->getContentSize());
+	label->setPosition({ wrapper->getContentWidth() / 2, wrapper->getContentHeight() / 2 });
+}
+
+CCNode* html_create_text_node(DOMNode node) {
+	CCLabelTTF* label = CCLabelTTF::create(node.content.c_str(), "tinos.ttf"_spr, 16.0f);
 	label->setColor({ 0, 0, 0 });
 	return label;
 }

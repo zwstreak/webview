@@ -3,6 +3,7 @@
 #include <include/renderer/HTML/HTML.hpp>
 #include <include/renderer/HTML/Containers.hpp>
 #include <include/renderer/HTML/Button.hpp>
+#include <include/renderer/HTML/Text.hpp>
 #include <include/Utils.hpp>
 
 #define CREATE_EMPTY_ELEMENT(tag, content) { DOM_ELEMENT, tag, content, {}, {} }
@@ -62,13 +63,13 @@ void WebviewRenderer::addTitlebar(std::vector<DOMNode> head) {
 }
 
 void WebviewRenderer::renderHTMLChild(DOMNode child, Node* parent) {
-	if (child.tag == LXB_TAG_SCRIPT) {
-		this->executeScript(child);
+	if (child.type == DOM_TEXT) {
+		this->scope->addChild(html_create_text_node(child));
 		return;
 	}
 
-	if (child.type == DOM_TEXT) {
-		geode::log::error("TODO: render DOM_TEXT nodes");
+	if (child.tag == LXB_TAG_SCRIPT) {
+		this->executeScript(child);
 		return;
 	}
 
@@ -91,6 +92,7 @@ void WebviewRenderer::renderHTMLChild(DOMNode child, Node* parent) {
 	this->scope->enter(node);
 	this->renderHTML(child.children, rendered);
 	this->scope->leave();
+	html_post_process(rendered);
 }
 
 void WebviewRenderer::renderHTML(std::vector<DOMNode> body, Node* parent) {
@@ -103,6 +105,11 @@ void WebviewRenderer::renderHTML(std::vector<DOMNode> body, Node* parent) {
 }
 
 void WebviewRenderer::executeScript(DOMNode script) {
+	if (!Mod::get()->getSettingValue<bool>("js-execution")) {
+		geode::log::debug("skipping script tag because js execution was disabled.");
+		return;
+	}
+
 	if (script.attributes.contains("src")) {
 		geode::log::error("scripts with \"src\" attribute are currently unsupported.");
 		return;

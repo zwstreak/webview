@@ -84,7 +84,7 @@ std::unordered_map<std::string, std::string> getAttributes(lxb_dom_element_t* el
     return attributes;
 }
 
-void parseText(lxb_dom_node_t* node, std::vector<DOMNode>& elements) {
+void parseText(lxb_dom_node_t* node, std::vector<DOMNode>& nodes) {
     size_t content_len;
     const lxb_char_t* content_lxb = lxb_dom_node_text_content(node, &content_len);
     std::string content = stringFromLXBC(content_lxb, content_len);
@@ -93,7 +93,7 @@ void parseText(lxb_dom_node_t* node, std::vector<DOMNode>& elements) {
         return;
     }
 
-    elements.push_back({
+    nodes.push_back({
         .type = DOM_TEXT,
         .tag = LXB_TAG__TEXT,
         .content = content,
@@ -104,11 +104,11 @@ void parseText(lxb_dom_node_t* node, std::vector<DOMNode>& elements) {
 
 std::vector<DOMNode> getChildrenOfNode(lxb_dom_node_t* target) {
     lxb_dom_node_t* node = lxb_dom_node_first_child(target);
-    std::vector<DOMNode> elements = {};
+    std::vector<DOMNode> nodes = {};
 
     while (node != NULL) {
         if (node->type == LXB_DOM_NODE_TYPE_TEXT) {
-            parseText(node, elements);
+            parseText(node, nodes);
             node = lxb_dom_node_next(node);
             continue;
         }
@@ -138,7 +138,7 @@ std::vector<DOMNode> getChildrenOfNode(lxb_dom_node_t* target) {
         // CHILDREN //
         std::vector<DOMNode> children = getChildrenOfNode(node);
 
-        elements.push_back({
+        nodes.push_back({
             .type = DOM_ELEMENT,
             .tag = tag_id,
             .content = content,
@@ -148,7 +148,7 @@ std::vector<DOMNode> getChildrenOfNode(lxb_dom_node_t* target) {
         node = lxb_dom_node_next(node);
     }
 
-    return elements;
+    return nodes;
 }
 
 // OTHER (MAIN) //
