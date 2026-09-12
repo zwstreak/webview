@@ -26,5 +26,10 @@ void html_post_process(Node* node) {
 		return html_post_process_text(node);
 	}
 
+	switch (node->tag) {
+	case LXB_TAG_BUTTON:
+		return html_post_process_button(node);
+	}
+
 	geode::log::debug("postprocess event does not exist for element with tag name '{}'", node->tagName);
 }

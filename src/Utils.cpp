@@ -42,3 +42,10 @@ bool isWhitespace(std::string data) {
 		return std::isspace(c);
 	});
 }
+
+void updateParent(CCNode* target, CCNode* newParent) {
+	target->retain();
+	target->removeFromParent();
+	newParent->addChild(target);
+	target->release();
+}

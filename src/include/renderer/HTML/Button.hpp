@@ -10,6 +10,7 @@ public:
 	ccColor3B m_bgHoverColor;
 	CCScale9Sprite* m_bg;
 	CCLabelTTF* m_label;
+	ButtonSprite* m_sprite;
 
 	static WebviewButton* create(ButtonSprite* sprite);
 	bool initMembers(ButtonSprite* sprite);
@@ -24,5 +25,7 @@ private:
 };
 
 WebviewButton* html_transpile_button(DOMNode data);
+WebviewButton* create_button(std::string content);
+void html_post_process_button(Node* node);
 
 #endif

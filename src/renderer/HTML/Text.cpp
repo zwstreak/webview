@@ -36,8 +36,8 @@ void html_post_process_text(Node* node) {
 	label->setPosition({ wrapper->getContentWidth() / 2, wrapper->getContentHeight() / 2 });
 }
 
-CCNode* html_create_text_node(DOMNode node) {
-	CCLabelTTF* label = CCLabelTTF::create(node.content.c_str(), "tinos.ttf"_spr, 16.0f);
+CCLabelTTF* html_create_text_node(DOMNode node) {
+	CCLabelTTF* label = CCLabelTTF::create(node.content.c_str(), "tinos.ttf"_spr, getFontSize(LXB_TAG_P) - 4.0f);
 	label->setColor({ 0, 0, 0 });
 	return label;
 }

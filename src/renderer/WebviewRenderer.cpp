@@ -6,7 +6,6 @@
 #include <include/renderer/HTML/Text.hpp>
 #include <include/Utils.hpp>
 
-#define CREATE_EMPTY_ELEMENT(tag, content) { DOM_ELEMENT, tag, content, {}, {} }
 #define TITLEBAR_HEIGHT 14
 
 void addBackground(CCNode* parent, float yPos, ccColor3B color = {255,255,255}) {
@@ -41,7 +40,7 @@ void WebviewRenderer::addTitlebar(std::vector<DOMNode> head) {
 	name->setPosition({ 9.0f, bar->getContentHeight() / 2 });
 	bar->addChild(name);
 
-	auto button = html_transpile_button(CREATE_EMPTY_ELEMENT(LXB_TAG_BUTTON, "X"));
+	auto button = create_button("X");
 	button->m_bg->setVisible(false);
 	bar->addChild(button);
 
