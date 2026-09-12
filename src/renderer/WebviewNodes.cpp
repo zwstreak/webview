@@ -20,6 +20,7 @@ Node::Node(DOMNode element, cocos2d::CCNode* cocos) {
 	this->tag = this->element.tag;
 	this->content = this->element.content;
 	this->childrenNodes = {};
+	this->type = this->element.type;
 }
 
 // WebviewNodes //

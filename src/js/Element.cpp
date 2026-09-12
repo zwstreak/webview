@@ -1,23 +1,23 @@
 #include <include/js/Element.hpp>
 #include <include/js/JSEngine.hpp>
 #include <include/renderer/HTML/Containers.hpp>
+#include <include/Utils.hpp>
 #include <format>
+#include <ranges>
 
 #define ATOM_FLAGS (JS_PROP_HAS_GET | JS_PROP_HAS_SET | JS_PROP_CONFIGURABLE | JS_PROP_WRITABLE)
 
 // DOMNode Utils //
-// TODO: HTMLParser DOMNode can be a text node or a html node dumbass
-// ughhhh what was i doing
 std::string stringifyHTML(Node* node) {
-	std::string children = node->content;
-	if (html_element_is_container(node->element)) {
-		children = "";
+	if (node->type == DOM_TEXT) {
+		return trim(node->content);
 	}
 
+	std::string children = "";
 	for (auto& child : node->childrenNodes) {
 		children += stringifyHTML(child);
 	}
-
+	
 	return std::format("<{0}>{1}</{0}>", node->tagName, children);
 }
 //				 //

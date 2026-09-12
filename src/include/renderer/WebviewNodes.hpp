@@ -15,6 +15,7 @@ struct Node {
 	lxb_tag_id_t tag;
 	std::string content;
 	std::vector<Node*> childrenNodes;
+	NodeType type;
 	DOMNode element;
 
 	Node(DOMNode element, cocos2d::CCNode* cocos);

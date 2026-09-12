@@ -12,5 +12,6 @@ std::string getAttribute(std::string key, Attributes attributes);
 std::string stringFromLXBC(const lxb_char_t* c, size_t len);
 bool isWhitespace(std::string data);
 void updateParent(CCNode* target, CCNode* newParent);
+std::string trim(std::string data);
 
 #endif

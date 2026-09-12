@@ -49,3 +49,10 @@ void updateParent(CCNode* target, CCNode* newParent) {
 	newParent->addChild(target);
 	target->release();
 }
+
+std::string trim(std::string data) {
+	std::string_view view(data);
+	view.remove_prefix(std::min(view.find_first_not_of(" \t\r\v\n"), view.size()));
+	view.remove_suffix(std::min(view.size() - view.find_last_not_of(" \t\r\v\n") - 1, view.size()));
+	return std::string(view);
+}

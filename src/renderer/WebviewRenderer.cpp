@@ -66,17 +66,12 @@ void WebviewRenderer::addTitlebar(std::vector<DOMNode> head) {
 }
 
 void WebviewRenderer::renderHTMLChild(DOMNode child, Node* parent) {
-	if (child.type == DOM_TEXT) {
-		this->scope->addChild(html_create_text_node(child));
-		return;
-	}
-
 	if (child.tag == LXB_TAG_SCRIPT) {
 		this->executeScript(child);
 		return;
 	}
 
-	CCNode* node = html_transpile_element(child);
+	CCNode* node = html_transpile_node(child);
 	if (node == nullptr) {
 		geode::log::error("Node with the tag id '{}' cannot be rendered because it is not implemented.", child.tag);
 		return;
@@ -88,7 +83,7 @@ void WebviewRenderer::renderHTMLChild(DOMNode child, Node* parent) {
 	}
 
 	this->scope->addChild(node);
-	if (child.children.size() < 1) {
+	if (child.tag == DOM_TEXT || child.children.size() < 1) {
 		return;
 	}
 

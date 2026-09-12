@@ -21,6 +21,14 @@ CCNode* html_transpile_element(DOMNode element) {
 	return nullptr;
 }
 
+CCNode* html_transpile_node(DOMNode node) {
+	if (node.type == DOM_TEXT) {
+		return html_create_text_node(node);
+	}
+
+	return html_transpile_element(node);
+}
+
 void html_post_process(Node* node) {
 	if (html_element_is_text(node->tag)) {
 		return html_post_process_text(node);
