@@ -40,12 +40,16 @@ void WebviewRenderer::addTitlebar(std::vector<DOMNode> head) {
 	name->setPosition({ 9.0f, bar->getContentHeight() / 2 });
 	bar->addChild(name);
 
-	auto button = create_button("X");
-	button->m_bg->setVisible(false);
+	// using gd close button sprite instead because the HTML button is squished for no reason at all
+	// don't you just love it when your code has a bug that cannot be traced
+	auto sprite = ButtonSprite::createWithSpriteFrameName("GJ_closeBtn_001.png");
+	auto button = CCMenuItemExt::createSpriteExtra(sprite, [](CCObject* sender) {});
 	bar->addChild(button);
 
-	button->setPosition({ bar->getContentWidth() - 15.0f, bar->getContentHeight() / 2});
-	button->m_scaleMultiplier = 1.2f;
+	button->m_scaleMultiplier = 1.1f;
+	button->m_baseScale = 0.3f;
+	button->setScale(0.3f);
+	button->setPosition({ bar->getContentWidth() - 15.0f, bar->getContentHeight() / 2 });
 	button->addActivateCallback([this](CCObject* sender) {
 		this->closeAndCleanup();
 	});

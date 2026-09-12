@@ -3,8 +3,6 @@
 #include <include/renderer/HTML/HTML.hpp>
 #include <include/Utils.hpp>
 
-#define CREATE_EMPTY_ELEMENT(tag, content) { DOM_ELEMENT, tag, content, {}, {} }
-
 // WebviewButton //
 WebviewButton* WebviewButton::create(ButtonSprite* sprite) {
 	auto ptr = new WebviewButton();
@@ -18,7 +16,7 @@ WebviewButton* WebviewButton::create(ButtonSprite* sprite) {
 }
 
 bool WebviewButton::initMembers(ButtonSprite* sprite) {
-	CCScale9Sprite* bg = dynamic_cast<CCScale9Sprite*>(getChild(sprite, 0));
+	CCScale9Sprite* bg = dynamic_cast<CCScale9Sprite*>(getChild(sprite, 1));
 	if (bg == nullptr) {
 		geode::log::warn("The background or the label of the button was not found.");
 		return false;
@@ -48,7 +46,9 @@ bool WebviewButton::init(ButtonSprite* sprite) {
 
 	this->setContentHeight(this->m_bg->getContentHeight() - 25.0f);
 	this->m_bg->setColor(this->m_bgColor);
-
+	this->m_sprite->removeChild(getChild(this->m_sprite, 0), true);
+	this->m_sprite->setScaleY(0.35f);
+	
 	return true;
 }
 
@@ -89,8 +89,6 @@ void WebviewButton::update(float dt) {
 // TRANSPILER //
 WebviewButton* html_transpile_button(DOMNode data) {
 	auto sprite = ButtonSprite::create("", "bigFont.fnt", "background.png"_spr, 0.4f);
-	sprite->removeChild(getChild(sprite, 0), true);
-	sprite->setScaleY(0.35f);
 	return WebviewButton::create(sprite);
 }
 
@@ -116,19 +114,4 @@ void html_post_process_button(Node* node) {
 	label->setPosition(button->m_sprite->getContentSize() / 2);
 	button->updateSprite();
 	button->m_label = label;
-}
-
-// did you know that i wrote cocos->addChild(cocos)
-// crazy what no sleep does to you
-WebviewButton* create_button(std::string content) {
-	DOMNode node = CREATE_EMPTY_ELEMENT(LXB_TAG_BUTTON, content);
-	WebviewButton* cocos = html_transpile_button(node);
-	CCLabelTTF* label = html_create_text_node(node);
-	cocos->addChild(label);
-
-	Node* tmp = new Node(node, cocos);
-	html_post_process_button(tmp);
-	delete tmp;
-
-	return cocos;
 }

@@ -25,7 +25,6 @@ private:
 };
 
 WebviewButton* html_transpile_button(DOMNode data);
-WebviewButton* create_button(std::string content);
 void html_post_process_button(Node* node);
 
 #endif
