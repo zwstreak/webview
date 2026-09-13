@@ -1,5 +1,6 @@
 #include <include/Utils.hpp>
 #include <ranges>
+#include <thread>
 
 CCNode* getChild(CCNode* parent, unsigned int at) {
 	CCArray* children = parent->getChildren();
@@ -55,4 +56,13 @@ std::string trim(std::string data) {
 	view.remove_prefix(std::min(view.find_first_not_of(" \t\r\v\n"), view.size()));
 	view.remove_suffix(std::min(view.size() - view.find_last_not_of(" \t\r\v\n") - 1, view.size()));
 	return std::string(view);
+}
+
+void sleep(double delayMs, std::function<void()> func) {
+	std::thread([func, delayMs]() {
+		std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<long long>(delayMs)));
+		geode::queueInMainThread([func] {
+			func();
+		});
+	}).detach();
 }

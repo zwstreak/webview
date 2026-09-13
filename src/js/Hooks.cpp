@@ -1,8 +1,15 @@
 #include <include/js/Hooks.hpp>
 #include <include/js/hooks/Console.hpp>
 #include <include/js/hooks/Document.hpp>
+#include <include/js/hooks/Global.hpp>
 
 #define JS_HOOK_FUNC(category, name) JS_NewCFunction(ctx, hooks::##category##::##name, #name, 1)
+
+void JSHooks::registerGlobal(JSContext* ctx) {
+	JSValue global = JS_GetGlobalObject(ctx);
+	JS_SetPropertyStr(ctx, global, "setTimeout", JS_HOOK_FUNC(global, setTimeout));
+	JS_FreeValue(ctx, global);
+}
 
 void JSHooks::registerDocument(JSContext* ctx) {
 	JSValue global = JS_GetGlobalObject(ctx);
@@ -24,6 +31,7 @@ void JSHooks::registerConsole(JSContext* ctx) {
 }
 
 void JSHooks::registerHooks(JSContext* ctx) {
+	JSHooks::registerGlobal(ctx);
 	JSHooks::registerConsole(ctx);
 	JSHooks::registerDocument(ctx);
 }
