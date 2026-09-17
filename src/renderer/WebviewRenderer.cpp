@@ -66,7 +66,7 @@ void WebviewRenderer::addTitlebar(std::vector<DOMNode> head) {
 	addBackground(bar, 0.0f, { 240, 240, 240 });
 }
 
-Node* WebviewRenderer::renderHTMLChild(DOMNode child, Node* parent) {
+Node* WebviewRenderer::renderHTMLChild(DOMNode child, NodeID parentId) {
 	if (child.tag == LXB_TAG_SCRIPT) {
 		this->executeScript(child);
 		return nullptr;
@@ -78,9 +78,10 @@ Node* WebviewRenderer::renderHTMLChild(DOMNode child, Node* parent) {
 		return nullptr;
 	}
 
-	Node* rendered = this->nodes->add(child, node, parent);
-	if (parent != nullptr) {
-		parent->childrenNodes.push_back(rendered);
+	Node* rendered = this->nodes->add(child, node, parentId);
+	if (parentId != NULL) {
+		Node* parent = this->nodes->get(parentId);
+		parent->childrenNodes.push_back(rendered->location);
 		parent->cocos->addChild(node);
 	} else {
 		this->scope->addChild(node);
@@ -91,15 +92,15 @@ Node* WebviewRenderer::renderHTMLChild(DOMNode child, Node* parent) {
 	}
 
 	this->scope->enter(node);
-	this->renderHTML(child.children, rendered);
+	this->renderHTML(child.children, rendered->location);
 	this->scope->leave();
 	html_post_process(rendered);
 	return rendered;
 }
 
-void WebviewRenderer::renderHTML(std::vector<DOMNode> body, Node* parent) {
+void WebviewRenderer::renderHTML(std::vector<DOMNode> body, NodeID parentId) {
 	for (auto& child : body) {
-		this->renderHTMLChild(child, parent);
+		this->renderHTMLChild(child, parentId);
 	}
 	
 	this->scope->updateLayout();

@@ -5,6 +5,9 @@
 #include <include/parsers/HTMLParser.hpp>
 #include <Geode/cocos/base_nodes/CCNode.h>
 
+// NodeID //
+using NodeID = size_t;
+
 // Node //
 struct Node {
 	cocos2d::CCNode* cocos;
@@ -14,13 +17,13 @@ struct Node {
 	Attributes attributes;
 	lxb_tag_id_t tag;
 	std::string content;
-	std::vector<Node*> childrenNodes;
+	std::vector<NodeID> childrenNodes;
 	NodeType type;
 	DOMNode element;
-	Node* parent;
-	size_t vec_id;
+	NodeID parent_id;
+	NodeID location;
 
-	Node(DOMNode element, cocos2d::CCNode* cocos, size_t id, Node* parent = nullptr);
+	Node(DOMNode element, cocos2d::CCNode* cocos, NodeID id, NodeID parent = NULL);
 };
 
 // WebviewNodes //
@@ -29,10 +32,13 @@ public:
 	std::optional<Node*> getById(std::string id);
 	std::vector<Node*> getByClassName(std::string name);
 	std::vector<Node*> getByTagName(std::string tag);
-	Node* add(DOMNode element, cocos2d::CCNode* cocos, Node* parent = nullptr);
-	void remove(size_t loc);
-	void clearNodes(std::vector<Node*> vec);
+
+	Node* add(DOMNode element, cocos2d::CCNode* cocos, NodeID parent = NULL);
+	Node* get(NodeID id);
+	void remove(NodeID loc);
+	void clearChildrenNodes(std::vector<NodeID> children);
 	void free();
+	
 	WebviewNodes();
 private:
 	std::vector<Node*> nodes;

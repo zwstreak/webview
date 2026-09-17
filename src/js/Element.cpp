@@ -13,22 +13,19 @@
 	JS_DefineProperty(ctx, obj, atom_##prop, JS_UNDEFINED, getter, setter, ATOM_FLAGS); \
 	JS_FreeAtom(ctx, atom_##prop)
 
-JSValue get_innerHTML(JS_PARAMS) {
-	Node* node = static_cast<Node*>(JS_GetOpaque(this_val, JSEngine::element_id));
-	if (node == nullptr) {
-		return JS_ThrowTypeError(ctx, "expected a node object");
+#define GET_NODE() static_cast<Node*>(JS_GetOpaque(this_val, JSEngine::element_id)); \
+	if (node == nullptr) { \
+		return JS_ThrowTypeError(ctx, "expected a node object"); \
 	}
 
+JSValue get_innerHTML(JS_PARAMS) {
+	Node* node = GET_NODE();
 	std::string html = stringifyHTMLChildren(node->childrenNodes);
 	return JS_NewString(ctx, html.c_str());
 }
 
 JSValue set_innerHTML(JS_PARAMS) {
-	Node* node = static_cast<Node*>(JS_GetOpaque(this_val, JSEngine::element_id));
-	if (node == nullptr) {
-		return JS_ThrowTypeError(ctx, "expected a node object");
-	}
-
+	Node* node = GET_NODE();
 	WebviewRenderer* renderer = WebviewRenderer::get();
 	JSEngine* engine = JSEngine::get();
 	if (engine == nullptr || renderer == nullptr) {
@@ -37,9 +34,9 @@ JSValue set_innerHTML(JS_PARAMS) {
 
 	std::string html = getJSString(ctx, argv[0]);
 	std::vector<DOMNode> data = HTMLParser::parseFragment(html);
-	engine->nodes->clearNodes(node->childrenNodes);
+	engine->nodes->clearChildrenNodes(node->childrenNodes);
 	for (auto& frag : data) {
-		renderer->renderHTMLChild(frag, node);
+		renderer->renderHTMLChild(frag, node->location);
 	}
 	
 	node->cocos->updateLayout();

@@ -2,7 +2,7 @@
 #include <include/renderer/WebviewRenderer.hpp>
 #include <include/js/JSEngine.hpp>
 
-std::string stringifyHTMLChildren(std::vector<Node*> children) {
+std::string stringifyHTMLChildren(std::vector<NodeID> children) {
 	std::string result = "";
 	for (auto& child : children) {
 		result += stringifyHTML(child);
@@ -11,7 +11,8 @@ std::string stringifyHTMLChildren(std::vector<Node*> children) {
 	return result;
 }
 
-std::string stringifyHTML(Node* node) {
+std::string stringifyHTML(NodeID loc) {
+	Node* node = JSEngine::getNodes()->get(loc);
 	if (node->type == DOM_TEXT) {
 		return trim(node->content);
 	}

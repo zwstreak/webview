@@ -7,6 +7,10 @@ JSEngine* JSEngine::get() {
 	return JSEngine::_instance;
 }
 
+WebviewNodes* JSEngine::getNodes() {
+	return JSEngine::get()->nodes;
+}
+
 void JSEngine::execute(std::string script) {
 	JSValue value = JS_Eval(this->ctx, script.c_str(), script.length(), "script.js", JS_EVAL_TYPE_GLOBAL);
 	if (JS_IsException(value)) {

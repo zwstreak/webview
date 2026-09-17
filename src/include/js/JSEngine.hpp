@@ -6,6 +6,7 @@
 class JSEngine {
 public:
 	static JSEngine* get();
+	static WebviewNodes* getNodes();
 	static JSClassID element_id;
 	WebviewNodes* nodes;
 
