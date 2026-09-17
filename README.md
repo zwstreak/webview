@@ -6,7 +6,7 @@
 
 # Table Of Contents
 * [Dependencies](#dependencies)
-* [Warning](#warning)
+* [Warnings](#warnings)
 * [How to use](#how-to-use)
 * [Questions & Answers](#questions--answers)
 
@@ -16,8 +16,10 @@
 
 These are automatically installed thanks to the `FetchContent` function (on `CMakeLists.txt`)
 
-# Warning
-This is not the kind of Webview you'd expect, It instead shows content by converting all HTML tags into Cocos2D objects (CCMenu* etc.), And converting CSS (Stylesheets) into Cocos2D functions (duhhhh).
+# Warnings
+* This is not the kind of Webview you'd expect, It instead shows content by converting all HTML tags into Cocos2D objects (CCMenu* etc.), And converting CSS (Stylesheets) into Cocos2D functions (duhhhh).
+* This does not (*currently*) support all the HTML tags because its too much just let me rest bro
+* There **MIGHT** be some bugs in the code and.. umm memory leaks hell yeah
 
 # How to use
 TODO: Show how to install the API first
@@ -29,7 +31,7 @@ webview->run();
 this->addChild(webview);
 ```
 
-### Loading an HTML resource
+### Loading an HTML resource (big thumbs up)
 ```c++
 ZWebview webview = ZWebview::create();
 webview->loadResource("index.html");
@@ -43,7 +45,7 @@ this->addChild(webview);
    so that it holds all the APIs I make for Geometry Dash.
 
 2. Why is the logo so bad?<br/>
-**->** uhhhh i think that is because i am the only developer of this mod lol (i tried (kinda))
+**->** bro wdym that logo is absolutely magnificent
 
 3. Is it free?<br/>
-**->** YES, it is and will always be free.
+**->** YES, it is and will always be free. (duh)

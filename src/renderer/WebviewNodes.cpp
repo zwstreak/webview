@@ -10,7 +10,7 @@ std::string getTagName(lxb_tag_id_t tag) {
 	return stringFromLXBC(tag_name, tag_len);
 }
 
-Node::Node(DOMNode element, cocos2d::CCNode* cocos) {
+Node::Node(DOMNode element, cocos2d::CCNode* cocos, size_t id, Node* parent) {
 	this->cocos = cocos;
 	this->element = element;
 	this->classList = getClassList(this->element.attributes);
@@ -21,17 +21,35 @@ Node::Node(DOMNode element, cocos2d::CCNode* cocos) {
 	this->content = this->element.content;
 	this->childrenNodes = {};
 	this->type = this->element.type;
+	this->parent = parent;
+	this->vec_id = id;
 }
 
 // WebviewNodes //
-Node* WebviewNodes::add(DOMNode element, cocos2d::CCNode* cocos) {
-	auto node = new Node(element, cocos);
+Node* WebviewNodes::add(DOMNode element, cocos2d::CCNode* cocos, Node* parent) {
+	auto node = new Node(element, cocos, this->nodes.size(), parent);
 	this->nodes.push_back(node);
 	return node;
 }
 
+void WebviewNodes::remove(size_t loc) {
+	// ISSUE?: other parents can have the removed node inside childrenNodes
+	// TODO: use vec_id for childrenNodes instead of the Node ptr itself
+	delete this->nodes[loc];
+	this->nodes[loc] = nullptr;
+}
+
+void WebviewNodes::clearNodes(std::vector<Node*> vec) {
+	for (auto& child : vec) {
+		child->cocos->removeFromParent();
+		this->remove(child->vec_id);
+	}
+	vec.clear();
+}
+
 void WebviewNodes::free() {
 	for (auto& x : this->nodes) {
+		if (x == nullptr) continue;
 		delete x;
 	}
 	delete this;

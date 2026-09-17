@@ -1,26 +1,17 @@
 #include <include/js/Element.hpp>
 #include <include/js/JSEngine.hpp>
 #include <include/renderer/HTML/Containers.hpp>
-#include <include/Utils.hpp>
+#include <include/js/Utils.hpp>
 #include <format>
 #include <ranges>
 
 #define ATOM_FLAGS (JS_PROP_HAS_GET | JS_PROP_HAS_SET | JS_PROP_CONFIGURABLE | JS_PROP_WRITABLE)
-
-// DOMNode Utils //
-std::string stringifyHTML(Node* node) {
-	if (node->type == DOM_TEXT) {
-		return trim(node->content);
-	}
-
-	std::string children = "";
-	for (auto& child : node->childrenNodes) {
-		children += stringifyHTML(child);
-	}
-	
-	return std::format("<{0}>{1}</{0}>", node->tagName, children);
-}
-//				 //
+#define CREATE_PROPERTY(prop, obj) \
+	JSAtom atom_##prop = JS_NewAtom(ctx, #prop); \
+	JSValue getter = JS_NewCFunction(ctx, get_##prop, "get " #prop, 1); \
+	JSValue setter = JS_NewCFunction(ctx, set_innerHTML, "set " #prop, 1); \
+	JS_DefineProperty(ctx, obj, atom_##prop, JS_UNDEFINED, getter, setter, ATOM_FLAGS); \
+	JS_FreeAtom(ctx, atom_##prop)
 
 JSValue get_innerHTML(JS_PARAMS) {
 	Node* node = static_cast<Node*>(JS_GetOpaque(this_val, JSEngine::element_id));
@@ -28,7 +19,7 @@ JSValue get_innerHTML(JS_PARAMS) {
 		return JS_ThrowTypeError(ctx, "expected a node object");
 	}
 
-	std::string html = stringifyHTML(node);
+	std::string html = stringifyHTMLChildren(node->childrenNodes);
 	return JS_NewString(ctx, html.c_str());
 }
 
@@ -38,24 +29,29 @@ JSValue set_innerHTML(JS_PARAMS) {
 		return JS_ThrowTypeError(ctx, "expected a node object");
 	}
 
-	const char* html = JS_ToCString(ctx, argv[0]);
-	JS_FreeCString(ctx, html);
-	return JS_UNDEFINED;
-}
+	WebviewRenderer* renderer = WebviewRenderer::get();
+	JSEngine* engine = JSEngine::get();
+	if (engine == nullptr || renderer == nullptr) {
+		return JS_ThrowSyntaxError(ctx, "could not set innerHTML");
+	}
 
-void define_innerHTML(JSContext* ctx, JSValue object) {
-	JSAtom atom = JS_NewAtom(ctx, "innerHTML");
-	JSValue getter = JS_NewCFunction(ctx, get_innerHTML, "get_innerHTML", 1);
-	JSValue setter = JS_NewCFunction(ctx, set_innerHTML, "set_innerHTML", 1);
-	JS_DefineProperty(ctx, object, atom, JS_UNDEFINED, getter, setter, ATOM_FLAGS);
-	JS_FreeAtom(ctx, atom);
+	std::string html = getJSString(ctx, argv[0]);
+	std::vector<DOMNode> data = HTMLParser::parseFragment(html);
+	engine->nodes->clearNodes(node->childrenNodes);
+	for (auto& frag : data) {
+		renderer->renderHTMLChild(frag, node);
+	}
+	
+	node->cocos->updateLayout();
+	return JS_UNDEFINED;
 }
 
 JSValue JS_NewElementFromNode(JSContext* ctx, Node* node) {
 	JSValue object = JS_NewObjectClass(ctx, JSEngine::element_id);
 	JS_SetOpaque(object, node);
 	JS_SetPropertyStr(ctx, object, "id", JS_NewString(ctx, node->id.c_str()));
-	define_innerHTML(ctx, object);
+	
+	CREATE_PROPERTY(innerHTML, object);
 
 	return object;
 }

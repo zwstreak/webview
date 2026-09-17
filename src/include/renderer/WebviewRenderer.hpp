@@ -10,18 +10,18 @@
 class WebviewRenderer {
 public:
 	static WebviewRenderer* create(ZWebview* target);
+	static WebviewRenderer* get();
 	void render(HTMLResult data);
 	void closeAndCleanup();
+	Node* renderHTMLChild(DOMNode child, Node* parent = nullptr);
 	WebviewNodes* nodes;
 private:
 	void addTitlebar(std::vector<DOMNode> head);
-	
 	void renderHTML(std::vector<DOMNode> body, Node* parent = nullptr);
-	void renderHTMLChild(DOMNode child, Node* parent = nullptr);
-
 	void executeScript(DOMNode script);
 	void executeJS(std::vector<DOMNode> data);
 
+	static WebviewRenderer* instance;
 	JSEngine* js;
 	WebviewScope* scope;
 	ZWebview* webview;

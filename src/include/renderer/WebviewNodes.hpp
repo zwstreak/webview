@@ -17,8 +17,10 @@ struct Node {
 	std::vector<Node*> childrenNodes;
 	NodeType type;
 	DOMNode element;
+	Node* parent;
+	size_t vec_id;
 
-	Node(DOMNode element, cocos2d::CCNode* cocos);
+	Node(DOMNode element, cocos2d::CCNode* cocos, size_t id, Node* parent = nullptr);
 };
 
 // WebviewNodes //
@@ -27,7 +29,9 @@ public:
 	std::optional<Node*> getById(std::string id);
 	std::vector<Node*> getByClassName(std::string name);
 	std::vector<Node*> getByTagName(std::string tag);
-	Node* add(DOMNode element, cocos2d::CCNode* cocos);
+	Node* add(DOMNode element, cocos2d::CCNode* cocos, Node* parent = nullptr);
+	void remove(size_t loc);
+	void clearNodes(std::vector<Node*> vec);
 	void free();
 	WebviewNodes();
 private:

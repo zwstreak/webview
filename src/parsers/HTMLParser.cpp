@@ -27,6 +27,37 @@ HTMLParser* HTMLParser::parse(const std::string &content) {
     return new HTMLParser(document, head, body);
 }
 
+std::vector<DOMNode> getChildrenOfNode(lxb_dom_node_t* target);
+std::vector<DOMNode> HTMLParser::parseFragment(const std::string& line) {
+    lxb_html_document_t* document = lxb_html_document_create();
+    if (document == NULL) {
+        lxb_html_document_destroy(document);
+        return {};
+    }
+
+    lxb_status_t status = lxb_html_document_parse(document, reinterpret_cast<const lxb_char_t*>(""), 0);
+    if (status != LXB_STATUS_OK) {
+        lxb_html_document_destroy(document);
+        return {};
+    }
+
+    lxb_dom_node_t* fragment = lxb_html_document_parse_fragment(
+        document,
+        (lxb_dom_element_t*)(lxb_html_document_body_element_noi(document)),
+        reinterpret_cast<const lxb_char_t*>(line.c_str()),
+        line.size()
+    );
+
+    if (fragment == NULL) {
+        lxb_html_document_destroy(document);
+        return {};
+    }
+
+    std::vector<DOMNode> children = getChildrenOfNode(fragment);
+    lxb_html_document_destroy(document);
+    return children;
+}
+
 // MAIN - CSS Extraction //
 Stylesheet extractLinkCSS(DOMNode element) {
     auto rel_it = element.attributes.find("rel");

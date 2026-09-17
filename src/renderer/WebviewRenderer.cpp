@@ -8,6 +8,7 @@
 
 #define TITLEBAR_HEIGHT 14
 
+WebviewRenderer* WebviewRenderer::instance = nullptr;
 void addBackground(CCNode* parent, float yPos, ccColor3B color = {255,255,255}) {
 	CCSprite* bg = CCSprite::create("background.png"_spr);
 	bg->setColor(color);
@@ -65,32 +66,35 @@ void WebviewRenderer::addTitlebar(std::vector<DOMNode> head) {
 	addBackground(bar, 0.0f, { 240, 240, 240 });
 }
 
-void WebviewRenderer::renderHTMLChild(DOMNode child, Node* parent) {
+Node* WebviewRenderer::renderHTMLChild(DOMNode child, Node* parent) {
 	if (child.tag == LXB_TAG_SCRIPT) {
 		this->executeScript(child);
-		return;
+		return nullptr;
 	}
 
 	CCNode* node = html_transpile_node(child);
 	if (node == nullptr) {
 		geode::log::error("Node with the tag id '{}' cannot be rendered because it is not implemented.", child.tag);
-		return;
+		return nullptr;
 	}
 
-	Node* rendered = this->nodes->add(child, node);
+	Node* rendered = this->nodes->add(child, node, parent);
 	if (parent != nullptr) {
 		parent->childrenNodes.push_back(rendered);
+		parent->cocos->addChild(node);
+	} else {
+		this->scope->addChild(node);
 	}
 
-	this->scope->addChild(node);
 	if (child.tag == DOM_TEXT || child.children.size() < 1) {
-		return;
+		return nullptr;
 	}
 
 	this->scope->enter(node);
 	this->renderHTML(child.children, rendered);
 	this->scope->leave();
 	html_post_process(rendered);
+	return rendered;
 }
 
 void WebviewRenderer::renderHTML(std::vector<DOMNode> body, Node* parent) {
@@ -136,6 +140,11 @@ void WebviewRenderer::render(HTMLResult data) {
 
 // hehe fancy
 WebviewRenderer* WebviewRenderer::create(ZWebview* target) {
+	if (WebviewRenderer::instance != nullptr) {
+		geode::log::error("instance of WebView renderer already exists.");
+		return nullptr;
+	}
+
 	// UI //
 	auto container = CCMenu::create();
 	container->setContentSize(target->getContentSize());
@@ -155,12 +164,18 @@ WebviewRenderer* WebviewRenderer::create(ZWebview* target) {
 	ptr->nodes = new WebviewNodes();
 	ptr->js = new JSEngine(ptr->nodes);
 	ptr->webview = target;
+	WebviewRenderer::instance = ptr;
 
 	return ptr;
 }
 
+WebviewRenderer* WebviewRenderer::get() {
+	return WebviewRenderer::instance;
+}
+
 // Note: WebviewRenderer won't be freed until it is closed, meaning this->nodes will exist
 void WebviewRenderer::closeAndCleanup() {
+	WebviewRenderer::instance = nullptr;
 	this->webview->removeFromParent();
 	this->js->free();
 	this->nodes->free();

@@ -15,6 +15,7 @@
 		<p>-- or --</p>
 		<div id="hmm">
 			I have something?
+			I am a div I AM A DIV!!! les gooo
 			<button>Quick Log in</button>
 		</div>
 
@@ -23,7 +24,10 @@
 			//console.warn(register.innerHTML);
 
 			const div = document.getElementById("hmm");
-			setTimeout(() => { console.log("5 seconds passed!"); }, 5000);
+			//console.log(div.innerHTML);
+			// yeah OF COURSE setTimeout does not work with innerHTML
+			//setTimeout(() => { div.innerHTML = "<p>lol get rekt</p>" }, 5000);
+			div.innerHTML = "<h1>Test.HTML</h1><button>this is a button. i think</button>";
 		</script>
 	</body>
-</html>
+</html>	

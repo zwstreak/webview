@@ -37,6 +37,7 @@ public:
      * @warning can return nullptr if any errors happen while parsing.
      */
     static HTMLParser* parse(const std::string& content);
+    static std::vector<DOMNode> parseFragment(const std::string& line);
 	// @warning automatically frees
     HTMLResult getResult();
 private:
