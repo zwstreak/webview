@@ -18,7 +18,7 @@ JSValue JS_HOOK_GLOBAL(setTimeout) {
 		return JS_ThrowTypeError(ctx, "second argument must be a valid number.");
 	}
 
-	sleep(delay, [&ctx, &callback]() {
+	sleep(delay, [ctx, callback]() {
 		JSValue ret = JS_Call(ctx, callback, JS_UNDEFINED, 0, nullptr);
 		JS_FreeValue(ctx, ret);
 		JS_FreeValue(ctx, callback);

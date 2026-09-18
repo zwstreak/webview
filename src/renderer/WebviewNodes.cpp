@@ -37,6 +37,15 @@ Node* WebviewNodes::get(NodeID loc) {
 }
 
 void WebviewNodes::remove(NodeID loc) {
+	Node* parent = this->get(this->get(loc)->parent_id);
+	if (parent != nullptr) {
+		parent->childrenNodes.erase(std::find(
+			parent->childrenNodes.begin(),
+			parent->childrenNodes.end(),
+			loc
+		));
+	}
+
 	delete this->nodes[loc - 1];
 	this->nodes[loc - 1] = nullptr;
 }

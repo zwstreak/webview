@@ -1,6 +1,6 @@
 #include <include/Utils.hpp>
+#include <arc/time/Sleep.hpp>
 #include <ranges>
-#include <thread>
 
 CCNode* getChild(CCNode* parent, unsigned int at) {
 	CCArray* children = parent->getChildren();
@@ -59,10 +59,7 @@ std::string trim(std::string data) {
 }
 
 void sleep(double delayMs, std::function<void()> func) {
-	std::thread([func, delayMs]() {
-		std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<long long>(delayMs)));
-		geode::queueInMainThread([func] {
-			func();
-		});
-	}).detach();
+	async::spawn(arc::sleepFor(asp::Duration::fromMillis(delayMs)), [func]() {
+		func();
+	});
 }
