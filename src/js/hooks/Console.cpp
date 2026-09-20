@@ -16,7 +16,7 @@ JSValue consoleMethod(JSContext* ctx, int argc, JSValue* argv, std::function<voi
 
 JSValue JS_HOOK_CONSOLE(log) {
 	return consoleMethod(ctx, argc, argv, [](std::string str) {
-		geode::log::debug("{} (CONSOLE)", str);
+		geode::log::info("{} (CONSOLE)", str);
 	});
 }
 

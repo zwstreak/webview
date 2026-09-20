@@ -82,6 +82,12 @@ std::vector<Node*> WebviewNodes::getByClassName(std::string name) {
 }
 
 std::vector<Node*> WebviewNodes::getByTagName(std::string tag) {
+	if (tag == "*") {
+		return this->nodes
+			| std::views::filter([](const Node* node) { return node->type == DOM_ELEMENT; })
+			| std::ranges::to<std::vector>();
+	}
+
 	return this->nodes
 		| std::views::filter([&tag](const Node* node) { return node->tagName == tag; })
 		| std::ranges::to<std::vector>();

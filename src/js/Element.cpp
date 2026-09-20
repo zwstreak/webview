@@ -46,8 +46,6 @@ JSValue set_innerHTML(JS_PARAMS) {
 JSValue JS_NewElementFromNode(JSContext* ctx, Node* node) {
 	JSValue object = JS_NewObjectClass(ctx, JSEngine::element_id);
 	JS_SetOpaque(object, node);
-	JS_SetPropertyStr(ctx, object, "id", JS_NewString(ctx, node->id.c_str()));
-	
 	CREATE_PROPERTY(innerHTML, object);
 
 	return object;

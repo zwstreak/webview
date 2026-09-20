@@ -20,14 +20,8 @@
 		</div>
 
 		<script>
-			//const register = document.getElementById("register");
-			//console.warn(register.innerHTML);
-
-			const div = document.getElementById("hmm");
-			//console.log(div.innerHTML);
-			// yeah OF COURSE setTimeout does not work with innerHTML
-			setTimeout(() => { div.innerHTML = "<p>lol get rekt</p>" }, 5000);
-			//div.innerHTML = "<h1>Test.HTML</h1><button>this is a button. i think</button>";
+			const all = document.getElementsByTagName("*");
+			console.log(`${all.map(x => `\n${x.innerHTML}`)}`);
 		</script>
 	</body>
 </html>	
