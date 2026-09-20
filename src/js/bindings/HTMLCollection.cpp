@@ -16,7 +16,14 @@ void HTMLCollection_finalizer(JSRuntime* rt, JSValue val) {
 }
 
 JSValue JS_NewHTMLCollection(JSContext* ctx, std::vector<NodeID> nodes) {
-	CollectionHolder* holder = new CollectionHolder(nodes);
+	std::vector<NodeID> sanitized = {};
+	for (auto& id : nodes) {
+		Node* data = JSEngine::get()->nodes->get(id);
+		if (data == nullptr || data->type != DOM_ELEMENT) continue;
+		sanitized.push_back(id);
+	}
+
+	CollectionHolder* holder = new CollectionHolder(sanitized);
 	JSValue collection = CREATE_OBJ_CLASS(collection, holder);
 	CREATE_PROPERTY_R(collection, length);
 

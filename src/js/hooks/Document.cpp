@@ -1,5 +1,6 @@
 #include <include/js/hooks/Document.hpp>
 #include <include/js/bindings/Element.hpp>
+#include <include/js/bindings/HTMLCollection.hpp>
 #include <include/js/JSEngine.hpp>
 #include <include/js/Utils.hpp>
 
@@ -8,10 +9,8 @@ JSValue JS_HOOK_DOCUMENT(getElementById) {
 		return JS_ThrowTypeError(ctx, "expected \"id\" argument.");
 	}
 
-	const char* id = JS_ToCString(ctx, argv[0]);
+	std::string id = getJSString(ctx, argv[0]);
 	auto optNode = JSEngine::get()->nodes->getById(id);
-	JS_FreeCString(ctx, id);
-	
 	if (optNode == std::nullopt) {
 		return JS_UNDEFINED;
 	}
@@ -25,15 +24,19 @@ JSValue JS_HOOK_DOCUMENT(getElementsByClassName) {
 		return JS_ThrowTypeError(ctx, "expected \"names\" argument.");
 	}
 
-	std::string names = getJSString(ctx, argv[0]);
-	std::vector<Node*> nodes = JSEngine::get()->nodes->getByClassName(names);
-	JSValue array = JS_NewArray(ctx);
-	for (size_t i = 0; i < nodes.size(); i++) {
-		JSValue obj = JS_NewElementFromNode(ctx, nodes[i]);
-		JS_SetPropertyInt64(ctx, array, i, obj);
+	JSEngine* engine = JSEngine::get();
+	if (engine == nullptr) {
+		return JS_ThrowTypeError(ctx, "could not get the JS engine.");
 	}
 
-	return array;
+	std::string names = getJSString(ctx, argv[0]);
+	std::vector<Node*> nodes = engine->nodes->getByClassName(names);
+	std::vector<NodeID> ids = {};
+	for (auto& n : nodes) {
+		ids.push_back(n->location);
+	}
+
+	return JS_NewHTMLCollection(ctx, ids);
 }
 
 JSValue JS_HOOK_DOCUMENT(getElementsByTagName) {
@@ -41,13 +44,17 @@ JSValue JS_HOOK_DOCUMENT(getElementsByTagName) {
 		return JS_ThrowTypeError(ctx, "expected \"tag\" argument.");
 	}
 
-	std::string tag = getJSString(ctx, argv[0]);
-	std::vector<Node*> nodes = JSEngine::get()->nodes->getByTagName(tag);
-	JSValue array = JS_NewArray(ctx);
-	for (size_t i = 0; i < nodes.size(); i++) {
-		JSValue obj = JS_NewElementFromNode(ctx, nodes[i]);
-		JS_SetPropertyInt64(ctx, array, i, obj);
+	JSEngine* engine = JSEngine::get();
+	if (engine == nullptr) {
+		return JS_ThrowTypeError(ctx, "could not get the JS engine.");
 	}
 
-	return array;
+	std::string tag = getJSString(ctx, argv[0]);
+	std::vector<Node*> nodes = engine->nodes->getByTagName(tag);
+	std::vector<NodeID> ids = {};
+	for (auto& n : nodes) {
+		ids.push_back(n->location);
+	}
+
+	return JS_NewHTMLCollection(ctx, ids);
 }
