@@ -1,4 +1,4 @@
-#include <include/js/Element.hpp>
+#include <include/js/bindings/Element.hpp>
 #include <include/js/JSEngine.hpp>
 #include <include/renderer/HTML/Containers.hpp>
 #include <include/js/Utils.hpp>
@@ -14,15 +14,15 @@
 
 #define CREATE_PROPERTY_RW(prop) \
 	JSAtom atom_##prop = JS_NewAtom(ctx, #prop); \
-	JSValue getter = JS_NewCFunction(ctx, get_##prop, "get " #prop, 1); \
-	JSValue setter = JS_NewCFunction(ctx, set_innerHTML, "set " #prop, 1); \
-	JS_DefineProperty(ctx, element, atom_##prop, JS_UNDEFINED, getter, setter, ATOM_RW_FLAGS); \
+	JSValue getter_##prop = JS_NewCFunction(ctx, get_##prop, "get " #prop, 1); \
+	JSValue setter_##prop = JS_NewCFunction(ctx, set_innerHTML, "set " #prop, 1); \
+	JS_DefineProperty(ctx, element, atom_##prop, JS_UNDEFINED, getter_##prop, setter_##prop, ATOM_RW_FLAGS); \
 	JS_FreeAtom(ctx, atom_##prop)
 
 #define CREATE_PROPERTY_R(prop) \
 	JSAtom atom_##prop = JS_NewAtom(ctx, #prop); \
-	JSValue getter = JS_NewCFunction(ctx, get_##prop, "get " #prop, 1); \
-	JS_DefineProperty(ctx, element, atom_##prop, JS_UNDEFINED, getter, JS_UNDEFINED, ATOM_R_FLAGS); \
+	JSValue getter_##prop = JS_NewCFunction(ctx, get_##prop, "get " #prop, 1); \
+	JS_DefineProperty(ctx, element, atom_##prop, JS_UNDEFINED, getter_##prop, JS_UNDEFINED, ATOM_R_FLAGS); \
 	JS_FreeAtom(ctx, atom_##prop)
 
 #define GET_NODE() static_cast<Node*>(JS_GetOpaque(this_val, JSEngine::element_id)); \
@@ -49,7 +49,6 @@ JSValue get_innerHTML(JS_PARAMS) {
 JSValue set_innerHTML(JS_PARAMS) {
 	Node* node = GET_NODE();
 	WebviewRenderer* renderer = WebviewRenderer::get();
-	JSEngine* engine = JSEngine::get();
 	if (engine == nullptr || renderer == nullptr) {
 		return JS_ThrowSyntaxError(ctx, "could not set innerHTML");
 	}

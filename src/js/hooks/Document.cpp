@@ -1,5 +1,5 @@
 #include <include/js/hooks/Document.hpp>
-#include <include/js/Element.hpp>
+#include <include/js/bindings/Element.hpp>
 #include <include/js/JSEngine.hpp>
 #include <include/js/Utils.hpp>
 
