@@ -8,27 +8,18 @@
 	},
 	"id": "zwstreak.webview",
 	"name": "WebView",
-	"version": "v0.0.1",
+	"version": "v0.0.2",
 	"developer": "zwstreak",
 	"description": "Adds WebView support to Geometry Dash.",
 	"tags": ["developer", "api", "utility"],
 	"links": {
 		"source": "https://github.com/zwstreak/webview"
 	},
-	"dependencies": {
-		"geode.node-ids": ">=v1.23.3"
-	},
 	"settings": {
 		"js-execution": {
 			"type": "bool",
 			"name": "JavaScript Execution",
 			"description": "If the box is unchecked, it disables JavaScript execution making webviews completely safe, However some webpages might break.",
-			"default": true
-		},
-		"warning-prompts": {
-			"type": "bool",
-			"name": "Warning Prompts",
-			"description": "When pressing \"Download\" on the prompt it downloads the source code of the website that is about to render for safety. (you can also select the download path)",
 			"default": true
 		}
 	},
