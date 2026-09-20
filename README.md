@@ -8,7 +8,9 @@
 * [Dependencies](#dependencies)
 * [Warnings](#warnings)
 * [How to use](#how-to-use)
-* [Questions & Answers](#questions--answers)
+* [API Usage](#api-usage)
+* [Supported APIs](#supported-apis)
+* [Questions & Answers](#questions-answers)
 
 # Dependencies
 - Lexbor (HTML, CSS Parser)
@@ -22,7 +24,25 @@ These are automatically installed thanks to the `FetchContent` function (on `CMa
 * There **MIGHT** be some bugs in the code and.. umm memory leaks hell yeah
 
 # How to use
-TODO: Show how to install the API first
+Create a new geode project (duh) then edit the mod.json file:
+```json
+...
+"dependencies": {
+	...,
+	{
+		"id": "zwstreak.webview",
+		"version": ">=0.0.1",
+		"importance": "required"
+	}
+}
+```
+
+After that you can include the API like this:
+```c++
+#include <Webview.hpp>
+```
+
+# API Usage
 ### Loading an HTML string (not recommended)
 ```c++
 ZWebview* webview = ZWebview::create();
@@ -38,6 +58,9 @@ webview->loadResource("index.html");
 webview->run();
 this->addChild(webview);
 ```
+
+# Supported APIs
+Read more at [Supported APIs](supported_apis.md) file.
 
 # Questions & Answers
 1. What does Z mean and why is it the prefix of classes?<br/>
