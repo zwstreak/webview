@@ -11,6 +11,7 @@ class JSHooks {
 private:
 	static void registerGlobal(JSContext* ctx);
 	static void registerDocument(JSContext* ctx);
+	static void registerWindow(JSContext* ctx);
 	static void registerConsole(JSContext* ctx);
 public:
 	static void registerHooks(JSContext* ctx);

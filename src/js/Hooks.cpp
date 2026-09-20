@@ -21,6 +21,14 @@ void JSHooks::registerDocument(JSContext* ctx) {
 	JS_FreeValue(ctx, global);
 }
 
+void JSHooks::registerWindow(JSContext* ctx) {
+	JSValue global = JS_GetGlobalObject(ctx);
+	JSValue window = JS_NewObject(ctx);
+	JS_SetPropertyStr(ctx, window, "document", JS_GetPropertyStr(ctx, global, "document"));
+	JS_SetPropertyStr(ctx, global, "window", window);
+	JS_FreeValue(ctx, global);
+}
+
 void JSHooks::registerConsole(JSContext* ctx) {
 	JSValue global = JS_GetGlobalObject(ctx);
 	JSValue console = JS_NewObject(ctx);
@@ -35,4 +43,5 @@ void JSHooks::registerHooks(JSContext* ctx) {
 	JSHooks::registerGlobal(ctx);
 	JSHooks::registerConsole(ctx);
 	JSHooks::registerDocument(ctx);
+	JSHooks::registerWindow(ctx);
 }

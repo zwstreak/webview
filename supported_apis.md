@@ -14,24 +14,33 @@
 * title
 
 # Supported JS API
-## Global
+## Hooks
+### Global
 * setTimeout
 
-## Console
+### Console
 * log
 * warn
 * err
 
-## Document
+### Document
 * getElementById
 * getElementsByTagName
 * getElementsByClassName
 
-## HTMLCollection
+### Window
+* document
+
+## Bindings
+### Element
+* innerHTML
+* children
+
+### HTMLCollection
 **LIVE** changes aren't currently supported.
 * length
 * item
 * namedItem
 
 # Supported CSS Selectors
-CSS support doesn't exist yet.
+CSS support does not exist yet.
