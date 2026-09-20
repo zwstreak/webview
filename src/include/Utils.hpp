@@ -1,7 +1,8 @@
 #ifndef WEBVIEW_UTILS_HPP
 #define WEBVIEW_UTILS_HPP
-
 #include <include/parsers/HTMLParser.hpp>
+#include <include/renderer/WebviewRenderer.hpp>
+#include <functional>
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 
@@ -14,5 +15,6 @@ bool isWhitespace(std::string data);
 void updateParent(CCNode* target, CCNode* newParent);
 std::string trim(std::string data);
 void sleep(double delayMs, std::function<void()> func);
+std::optional<Node*> getMatchFromIDs(std::vector<NodeID> ids, WebviewNodes* nodes, std::function<bool(Node*)> filter);
 
 #endif

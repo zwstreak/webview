@@ -1,6 +1,7 @@
 #include <include/js/bindings/HTMLCollection.hpp>
 #include <include/js/bindings/Element.hpp>
 #include <include/js/Directives.hpp>
+#include <include/js/Utils.hpp>
 
 // TODO: HTMLCollection is currently static, while it is supposed to be live bruh
 #define GET_COLLECTION() GET_OPAQUE(collection, holder, CollectionHolder*)
@@ -33,12 +34,31 @@ JSValue fn_item(JS_PARAMS) {
 	return JS_NewElementFromNode(ctx, node);
 }
 
+JSValue fn_namedItem(JS_PARAMS) {
+	if (argc < 1) {
+		return JS_ThrowTypeError(ctx, "expected \"key\" argument.");
+	}
+
+	CollectionHolder* holder = GET_COLLECTION();
+	std::string key = getJSString(ctx, argv[0]);
+	std::optional<Node*> match = getMatchFromIDs(holder->data, engine->nodes, [key](Node* node) {
+		return node->id == key || node->attributes["name"] == key;
+	});
+
+	if (match == std::nullopt) {
+		return JS_NULL;
+	}
+
+	return JS_NewElementFromNode(ctx, match.value());
+}
+
 void HTMLCollection_finalizer(JSRuntime* rt, JSValue val) {
 	CollectionHolder* holder = static_cast<CollectionHolder*>(JS_GetOpaque(val, JSEngine::collection_id));
 	if (holder == nullptr) return;
 	delete holder;
 }
 
+// TODO: support indexing on HTMLCollection (obj[0])
 JSValue JS_NewHTMLCollection(JSContext* ctx, std::vector<NodeID> nodes) {
 	std::vector<NodeID> sanitized = {};
 	for (auto& id : nodes) {
@@ -50,6 +70,7 @@ JSValue JS_NewHTMLCollection(JSContext* ctx, std::vector<NodeID> nodes) {
 	CollectionHolder* holder = new CollectionHolder(sanitized);
 	JSValue collection = CREATE_OBJ_CLASS(collection, holder);
 	CREATE_FUNCTION(collection, item, fn_item);
+	CREATE_FUNCTION(collection, namedItem, fn_namedItem);
 	CREATE_PROPERTY_R(collection, length);
 
 	return collection;

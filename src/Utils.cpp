@@ -63,3 +63,12 @@ void sleep(double delayMs, std::function<void()> func) {
 		func();
 	});
 }
+
+std::optional<Node*> getMatchFromIDs(std::vector<NodeID> ids, WebviewNodes* nodes, std::function<bool(Node*)> filter) {
+	auto match = ids
+		| std::views::filter([filter, nodes](const NodeID& id) { return filter(nodes->get(id)); }) 
+		| std::views::take(1);
+
+	if (!match.empty()) return nodes->get(match.front());
+	return std::nullopt;
+}
