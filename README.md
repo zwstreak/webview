@@ -32,7 +32,7 @@ Create a new geode project (duh) then edit the mod.json file:
 	{
 		"id": "zwstreak.webview",
 		"version": ">=0.0.1",
-		"importance": "required"
+		"required": true
 	}
 }
 ```

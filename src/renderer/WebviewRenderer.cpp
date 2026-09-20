@@ -79,7 +79,7 @@ Node* WebviewRenderer::renderHTMLChild(DOMNode child, NodeID parentId) {
 	}
 
 	Node* rendered = this->nodes->add(child, node, parentId);
-	if (parentId != NULL) {
+	if (parentId != 0) {
 		Node* parent = this->nodes->get(parentId);
 		parent->childrenNodes.push_back(rendered->location);
 		parent->cocos->addChild(node);

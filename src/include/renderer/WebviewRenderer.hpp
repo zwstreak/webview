@@ -13,11 +13,11 @@ public:
 	static WebviewRenderer* get();
 	void render(HTMLResult data);
 	void closeAndCleanup();
-	Node* renderHTMLChild(DOMNode child, NodeID parentId = NULL);
+	Node* renderHTMLChild(DOMNode child, NodeID parentId = 0);
 	WebviewNodes* nodes;
 private:
 	void addTitlebar(std::vector<DOMNode> head);
-	void renderHTML(std::vector<DOMNode> body, NodeID parentId = NULL);
+	void renderHTML(std::vector<DOMNode> body, NodeID parentId = 0);
 	void executeScript(DOMNode script);
 	void executeJS(std::vector<DOMNode> data);
 

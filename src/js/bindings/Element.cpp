@@ -2,7 +2,7 @@
 #include <include/js/bindings/HTMLCollection.hpp>
 #include <include/js/JSEngine.hpp>
 #include <include/renderer/HTML/Containers.hpp>
-#include <include/js/Utils.hpp>
+#include <include/js/JSUtils.hpp>
 #include <include/js/Directives.hpp>
 #include <format>
 #include <ranges>

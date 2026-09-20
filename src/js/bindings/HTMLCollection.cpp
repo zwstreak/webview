@@ -1,7 +1,7 @@
 #include <include/js/bindings/HTMLCollection.hpp>
 #include <include/js/bindings/Element.hpp>
 #include <include/js/Directives.hpp>
-#include <include/js/Utils.hpp>
+#include <include/js/JSUtils.hpp>
 
 // TODO: HTMLCollection is currently static, while it is supposed to be live bruh
 #define GET_COLLECTION() GET_OPAQUE(collection, holder, CollectionHolder*)

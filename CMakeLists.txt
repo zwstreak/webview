@@ -25,6 +25,12 @@ target_include_directories(${PROJECT_NAME}
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
+add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
+
+if (PROJECT_IS_TOP_LEVEL)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE WEBVIEW_EXPORTING)
+endif()
+
 if (NOT DEFINED ENV{GEODE_SDK})
     message(FATAL_ERROR "Unable to find Geode SDK! Please define GEODE_SDK environment variable to point to Geode")
 else()
@@ -51,10 +57,9 @@ FetchContent_MakeAvailable(lexbor)
 FetchContent_MakeAvailable(quickjs_ng)
 ##         ##
 
-add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
-setup_geode_mod(${PROJECT_NAME})
-
 ## PACKAGES (Linking) ##
 target_link_libraries(${PROJECT_NAME} lexbor_static)
 target_link_libraries(${PROJECT_NAME} qjs)
 ##                    ##
+
+setup_geode_mod(${PROJECT_NAME})

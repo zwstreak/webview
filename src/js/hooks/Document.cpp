@@ -2,7 +2,7 @@
 #include <include/js/bindings/Element.hpp>
 #include <include/js/bindings/HTMLCollection.hpp>
 #include <include/js/JSEngine.hpp>
-#include <include/js/Utils.hpp>
+#include <include/js/JSUtils.hpp>
 
 JSValue JS_HOOK_DOCUMENT(getElementById) {
 	if (argc < 1) {
