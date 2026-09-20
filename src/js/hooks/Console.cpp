@@ -16,18 +16,18 @@ JSValue consoleMethod(JSContext* ctx, int argc, JSValue* argv, std::function<voi
 
 JSValue JS_HOOK_CONSOLE(log) {
 	return consoleMethod(ctx, argc, argv, [](std::string str) {
-		geode::log::info("{} (CONSOLE)", str);
+		geode::log::info("[WEB-CONSOLE] {}", str);
 	});
 }
 
 JSValue JS_HOOK_CONSOLE(warn) {
 	return consoleMethod(ctx, argc, argv, [](std::string str) {
-		geode::log::warn("{} (CONSOLE)", str);
+		geode::log::warn("[WEB-CONSOLE] {}", str);
 	});
 }
 
 JSValue JS_HOOK_CONSOLE(error) {
 	return consoleMethod(ctx, argc, argv, [](std::string str) {
-		geode::log::error("{} (CONSOLE)", str);
+		geode::log::error("[WEB-CONSOLE] {}", str);
 	});
 }

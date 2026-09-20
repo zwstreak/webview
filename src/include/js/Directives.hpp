@@ -18,6 +18,9 @@
 	JS_DefineProperty(ctx, obj, atom_##prop, JS_UNDEFINED, getter_##prop, JS_UNDEFINED, ATOM_R_FLAGS); \
 	JS_FreeAtom(ctx, atom_##prop)
 
+#define CREATE_FUNCTION(obj, name, ptr) \
+	JS_SetPropertyStr(ctx, obj, #name, JS_NewCFunction(ctx, ptr, #name, 1));
+
 #define GET_OPAQUE(obj, name, cast) static_cast<cast>(JS_GetOpaque(this_val, JSEngine::obj##_id)); \
 	if (name == nullptr) { return JS_ThrowTypeError(ctx, "expected a '" #name "' object"); } \
 	JSEngine* engine = JSEngine::get(); \
