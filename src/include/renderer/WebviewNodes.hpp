@@ -23,7 +23,7 @@ struct Node {
 	NodeID parent_id;
 	NodeID location;
 
-	Node(DOMNode element, cocos2d::CCNode* cocos, NodeID id, NodeID parent = NULL);
+	Node(DOMNode element, cocos2d::CCNode* cocos, NodeID id, NodeID parent = 0);
 };
 
 // WebviewNodes //
@@ -33,7 +33,7 @@ public:
 	std::vector<Node*> getByClassName(std::string name);
 	std::vector<Node*> getByTagName(std::string tag);
 
-	Node* add(DOMNode element, cocos2d::CCNode* cocos, NodeID parent = NULL);
+	Node* add(DOMNode element, cocos2d::CCNode* cocos, NodeID parent = 0);
 	Node* get(NodeID id);
 	void remove(NodeID loc);
 	void clearChildrenNodes(std::vector<NodeID> children);
