@@ -8,6 +8,7 @@ public:
 	static JSEngine* get();
 	static WebviewNodes* getNodes();
 	static JSClassID element_id;
+	static JSClassID collection_id;
 	WebviewNodes* nodes;
 
 	void execute(std::string script);

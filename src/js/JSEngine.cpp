@@ -1,7 +1,9 @@
 #include <include/js/JSEngine.hpp>
 #include <include/js/Hooks.hpp>
+#include <include/js/bindings/HTMLCollection.hpp>
 
 JSClassID JSEngine::element_id = 0;
+JSClassID JSEngine::collection_id = 0;
 JSEngine* JSEngine::_instance = nullptr;
 JSEngine* JSEngine::get() {
 	return JSEngine::_instance;
@@ -27,9 +29,16 @@ void JSEngine::init() {
 	this->runtime = JS_NewRuntime();
 	this->ctx = JS_NewContext(runtime);
 
-	JS_NewClassID(this->runtime, &JSEngine::element_id);
 	JSClassDef element_def = { .class_name = "Element" };
+	JSClassDef collection_def = { 
+		.class_name = "HTMLCollection",
+		.finalizer = HTMLCollection_finalizer
+	};
+
+	JS_NewClassID(this->runtime, &JSEngine::element_id);
+	JS_NewClassID(this->runtime, &JSEngine::collection_id);
 	JS_NewClass(this->runtime, JSEngine::element_id, &element_def);
+	JS_NewClass(this->runtime, JSEngine::collection_id, &collection_def);
 
 	JSHooks::registerHooks(this->ctx);
 }
