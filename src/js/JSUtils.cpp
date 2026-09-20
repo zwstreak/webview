@@ -1,6 +1,7 @@
 #include <include/js/JSUtils.hpp>
 #include <include/renderer/WebviewRenderer.hpp>
 #include <include/js/JSEngine.hpp>
+#include <fmt/format.h>
 
 std::string stringifyHTMLChildren(std::vector<NodeID> children) {
 	std::string result = "";
@@ -22,7 +23,7 @@ std::string stringifyHTML(NodeID loc) {
 		children += stringifyHTML(child);
 	}
 
-	return std::format("<{0}>{1}</{0}>", node->tagName, children);
+	return fmt::format("<{0}>{1}</{0}>", node->tagName, children);
 }
 
 std::string getJSString(JSContext* ctx, JSValue value) {

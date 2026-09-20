@@ -4,7 +4,6 @@
 #include <include/renderer/HTML/Containers.hpp>
 #include <include/js/JSUtils.hpp>
 #include <include/js/Directives.hpp>
-#include <format>
 #include <ranges>
 
 #define GET_NODE() GET_OPAQUE(element, node, Node*)
