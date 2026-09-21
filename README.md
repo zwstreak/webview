@@ -48,7 +48,7 @@ this->addChild(webview);
 ### Loading an HTML resource (big thumbs up)
 ```c++
 ZWebview webview = ZWebview::create();
-webview->loadResource("index.html");
+webview->loadResource(Mod::get(), "index.html");
 webview->run();
 this->addChild(webview);
 ```

@@ -1,3 +1,6 @@
+# v0.0.4
+- Fix README mistake (again)
+
 # v0.0.3
 - Remove test.html from the resources folder
 - API export in mod.json
