@@ -3,22 +3,37 @@
 #include <include/renderer/WebviewNodes.hpp>
 #include <quickjs.h>
 
+class JSEngine;
+struct JSOpaque {
+	JSEngine* engine;
+	void* data;
+
+	JSOpaque(void* data, JSEngine* engine): data(data), engine(engine) {}
+};
+
+class WebviewRenderer;
 class JSEngine {
 public:
-	static JSEngine* get();
-	static WebviewNodes* getNodes();
+	// TODO: move the class IDS to a seperate class
 	static JSClassID element_id;
 	static JSClassID collection_id;
-	WebviewNodes* nodes;
+	static JSClassID document_id;
+
+	WebviewNodes* getNodes();
+	WebviewRenderer* getRenderer();
+	void storeOpaque(JSOpaque* opaque);
 
 	void execute(std::string script);
 	void init();
 	void free();
-	JSEngine(WebviewNodes* nodes);
+	JSEngine(WebviewRenderer* renderer);
 private:
-	static JSEngine* _instance;
+	std::vector<JSOpaque*> opaque_pool;
 	JSRuntime* runtime;
 	JSContext* ctx;
+	WebviewRenderer* _renderer;
 };
+
+JSOpaque* JSOpaque_new(void* data, JSEngine* engine);
 
 #endif

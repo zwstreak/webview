@@ -11,35 +11,31 @@
 // children //
 JSValue get_children(JS_PARAMS) {
 	Node* node = GET_NODE();
-	return JS_NewHTMLCollection(ctx, node->childrenNodes);
+	return JS_NewHTMLCollection(engine, ctx, node->childrenNodes);
 }
 
 // innerHTML //
 JSValue get_innerHTML(JS_PARAMS) {
 	Node* node = GET_NODE();
-	std::string html = stringifyHTMLChildren(node->childrenNodes);
+	std::string html = stringifyHTMLChildren(engine, node->childrenNodes);
 	return JS_NewString(ctx, html.c_str());
 }
 
 JSValue set_innerHTML(JS_PARAMS) {
 	Node* node = GET_NODE();
-	WebviewRenderer* renderer = WebviewRenderer::get();
-	if (engine == nullptr || renderer == nullptr) {
-		return JS_ThrowSyntaxError(ctx, "could not set innerHTML");
-	}
-
 	std::string html = getJSString(ctx, argv[0]);
 	std::vector<DOMNode> data = HTMLParser::parseFragment(html);
-	engine->nodes->clearChildrenNodes(node->childrenNodes);
+	
+	engine->getNodes()->clearChildrenNodes(node->childrenNodes);
 	for (auto& frag : data) {
-		renderer->renderHTMLChild(frag, node->location);
+		engine->getRenderer()->renderHTMLChild(frag, node->location);
 	}
 	
 	node->cocos->updateLayout();
 	return JS_UNDEFINED;
 }
 
-JSValue JS_NewElementFromNode(JSContext* ctx, Node* node) {
+JSValue JS_NewElementFromNode(JSEngine* engine, JSContext* ctx, Node* node) {
 	JSValue element = CREATE_OBJ_CLASS(element, node);
 	CREATE_PROPERTY_RW(element, innerHTML);
 	CREATE_PROPERTY_R(element, children);

@@ -4,13 +4,14 @@
 
 JSClassID JSEngine::element_id = 0;
 JSClassID JSEngine::collection_id = 0;
-JSEngine* JSEngine::_instance = nullptr;
-JSEngine* JSEngine::get() {
-	return JSEngine::_instance;
+JSClassID JSEngine::document_id = 0;
+
+WebviewRenderer* JSEngine::getRenderer() {
+	return this->_renderer;
 }
 
 WebviewNodes* JSEngine::getNodes() {
-	return JSEngine::get()->nodes;
+	return this->getRenderer()->getNodes();
 }
 
 void JSEngine::execute(std::string script) {
@@ -30,6 +31,7 @@ void JSEngine::init() {
 	this->ctx = JS_NewContext(runtime);
 
 	JSClassDef element_def = { .class_name = "Element" };
+	JSClassDef document_def = { .class_name = "Document" };
 	JSClassDef collection_def = { 
 		.class_name = "HTMLCollection",
 		.finalizer = HTMLCollection_finalizer
@@ -37,26 +39,36 @@ void JSEngine::init() {
 
 	JS_NewClassID(this->runtime, &JSEngine::element_id);
 	JS_NewClassID(this->runtime, &JSEngine::collection_id);
+	JS_NewClassID(this->runtime, &JSEngine::document_id);
 	JS_NewClass(this->runtime, JSEngine::element_id, &element_def);
 	JS_NewClass(this->runtime, JSEngine::collection_id, &collection_def);
+	JS_NewClass(this->runtime, JSEngine::document_id, &document_def);
 
-	JSHooks::registerHooks(this->ctx);
+	JSHooks::registerHooks(this, this->ctx);
+}
+
+void JSEngine::storeOpaque(JSOpaque* opaque) {
+	this->opaque_pool.push_back(opaque);
+}
+
+JSOpaque* JSOpaque_new(void* data, JSEngine* engine) {
+	JSOpaque* ptr = new JSOpaque(data, engine);
+	engine->storeOpaque(ptr);
+	return ptr;
 }
 
 void JSEngine::free() {
+	for (auto& opaque : this->opaque_pool) {
+		if (opaque == nullptr) continue;
+		delete opaque;
+	}
+
 	JS_FreeContext(this->ctx);
 	JS_FreeRuntime(this->runtime);
-	JSEngine::_instance = nullptr;
 	delete this;
 }
 
-JSEngine::JSEngine(WebviewNodes* nodes) {
-	if (JSEngine::_instance != nullptr) {
-		geode::log::error("instance of JSEngine already exists.");
-		return;
-	}
-
-	JSEngine::_instance = this;
-	this->nodes = nodes;
+JSEngine::JSEngine(WebviewRenderer* renderer) {
+	this->_renderer = renderer;
 	this->init();
 }

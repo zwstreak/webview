@@ -4,6 +4,6 @@
 #include <include/renderer/WebviewRenderer.hpp>
 #include <include/js/Hooks.hpp>
 
-JSValue JS_NewElementFromNode(JSContext* ctx, Node* node);
+JSValue JS_NewElementFromNode(JSEngine* engine, JSContext* ctx, Node* node);
 
 #endif

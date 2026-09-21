@@ -2,18 +2,20 @@
 #include <include/js/hooks/Console.hpp>
 #include <include/js/hooks/Document.hpp>
 #include <include/js/hooks/Global.hpp>
+#include <include/js/JSEngine.hpp>
+#include <include/js/Directives.hpp>
 
 #define JS_HOOK_FUNC(category, name) JS_NewCFunction(ctx, hooks::category::name, #name, 1)
 
-void JSHooks::registerGlobal(JSContext* ctx) {
+void JSHooks::registerGlobal(JSEngine* engine, JSContext* ctx) {
 	JSValue global = JS_GetGlobalObject(ctx);
 	JS_SetPropertyStr(ctx, global, "setTimeout", JS_HOOK_FUNC(global, setTimeout));
 	JS_FreeValue(ctx, global);
 }
 
-void JSHooks::registerDocument(JSContext* ctx) {
+void JSHooks::registerDocument(JSEngine* engine, JSContext* ctx) {
 	JSValue global = JS_GetGlobalObject(ctx);
-	JSValue document = JS_NewObject(ctx);
+	JSValue document = CREATE_OBJ_CLASS(document, engine);
 	JS_SetPropertyStr(ctx, document, "getElementById", JS_HOOK_FUNC(document, getElementById));
 	JS_SetPropertyStr(ctx, document, "getElementsByClassName", JS_HOOK_FUNC(document, getElementsByClassName));
 	JS_SetPropertyStr(ctx, document, "getElementsByTagName", JS_HOOK_FUNC(document, getElementsByTagName));
@@ -21,7 +23,7 @@ void JSHooks::registerDocument(JSContext* ctx) {
 	JS_FreeValue(ctx, global);
 }
 
-void JSHooks::registerWindow(JSContext* ctx) {
+void JSHooks::registerWindow(JSEngine* engine, JSContext* ctx) {
 	JSValue global = JS_GetGlobalObject(ctx);
 	JSValue window = JS_NewObject(ctx);
 	JS_SetPropertyStr(ctx, window, "document", JS_GetPropertyStr(ctx, global, "document"));
@@ -29,7 +31,7 @@ void JSHooks::registerWindow(JSContext* ctx) {
 	JS_FreeValue(ctx, global);
 }
 
-void JSHooks::registerConsole(JSContext* ctx) {
+void JSHooks::registerConsole(JSEngine* engine, JSContext* ctx) {
 	JSValue global = JS_GetGlobalObject(ctx);
 	JSValue console = JS_NewObject(ctx);
 	JS_SetPropertyStr(ctx, console, "log", JS_HOOK_FUNC(console, log));
@@ -39,9 +41,9 @@ void JSHooks::registerConsole(JSContext* ctx) {
 	JS_FreeValue(ctx, global);
 }
 
-void JSHooks::registerHooks(JSContext* ctx) {
-	JSHooks::registerGlobal(ctx);
-	JSHooks::registerConsole(ctx);
-	JSHooks::registerDocument(ctx);
-	JSHooks::registerWindow(ctx);
+void JSHooks::registerHooks(JSEngine* engine, JSContext* ctx) {
+	JSHooks::registerGlobal(engine, ctx);
+	JSHooks::registerConsole(engine, ctx);
+	JSHooks::registerDocument(engine, ctx);
+	JSHooks::registerWindow(engine, ctx);
 }

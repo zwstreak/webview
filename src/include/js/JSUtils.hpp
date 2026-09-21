@@ -5,8 +5,8 @@
 #include <quickjs.h>
 
 // utility functions that are specific to the JS runtime
-std::string stringifyHTMLChildren(std::vector<NodeID> children);
-std::string stringifyHTML(NodeID node);
+std::string stringifyHTMLChildren(JSEngine* engine, std::vector<NodeID> children);
+std::string stringifyHTML(JSEngine* engine, NodeID node);
 std::string getJSString(JSContext* ctx, JSValue value);
 
 #endif

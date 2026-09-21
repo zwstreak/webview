@@ -7,14 +7,15 @@
 #define JS_HOOK_DOCUMENT(member) hooks::document::member(JS_PARAMS)
 #define JS_HOOK_GLOBAL(member) hooks::global::member(JS_PARAMS)
 
+class JSEngine;
 class JSHooks {
 private:
-	static void registerGlobal(JSContext* ctx);
-	static void registerDocument(JSContext* ctx);
-	static void registerWindow(JSContext* ctx);
-	static void registerConsole(JSContext* ctx);
+	static void registerGlobal(JSEngine* engine, JSContext* ctx);
+	static void registerDocument(JSEngine* engine, JSContext* ctx);
+	static void registerWindow(JSEngine* engine, JSContext* ctx);
+	static void registerConsole(JSEngine* engine, JSContext* ctx);
 public:
-	static void registerHooks(JSContext* ctx);
+	static void registerHooks(JSEngine* engine, JSContext* ctx);
 };
 
 #endif
