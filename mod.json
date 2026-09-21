@@ -8,12 +8,13 @@
 	},
 	"id": "zwstreak.webview",
 	"name": "WebView",
-	"version": "v0.0.4",
+	"version": "v0.0.5",
 	"developer": "zwstreak",
 	"description": "Adds WebView support to Geometry Dash.",
 	"tags": [ "developer", "api", "utility" ],
 	"links": {
-		"source": "https://github.com/zwstreak/webview"
+		"source": "https://github.com/zwstreak/webview",
+		"community": "https://discord.gg/YThA5UWSqQ"
 	},
 	"settings": {
 		"js-execution": {

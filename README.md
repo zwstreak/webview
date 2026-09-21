@@ -27,7 +27,7 @@ These are automatically installed thanks to the `FetchContent` function (on `CMa
 Create a new geode project (duh) then edit the mod.json file:
 ```json
 "dependencies": {
-	"zwstreak.webview": ">=v0.0.3"
+	"zwstreak.webview": ">=v0.0.4"
 }
 ```
 
