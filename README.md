@@ -6,7 +6,7 @@
 
 # Table Of Contents
 * [Dependencies](#dependencies)
-* [Warnings](#warnings)
+* [Warning](#warning)
 * [How to use](#how-to-use)
 * [API Usage](#api-usage)
 * [Supported APIs](#supported-apis)
@@ -18,7 +18,7 @@
 
 These are automatically installed thanks to the `FetchContent` function (on `CMakeLists.txt`)
 
-# Warnings
+# Warning
 * This is not the kind of Webview you'd expect, It instead shows content by converting all HTML tags into Cocos2D objects (CCMenu* etc.), And converting CSS (Stylesheets) into Cocos2D functions (duhhhh).
 * This does not (*currently*) support all the HTML tags because its too much just let me rest bro
 * There **MIGHT** be some bugs in the code and.. umm memory leaks hell yeah
@@ -26,20 +26,14 @@ These are automatically installed thanks to the `FetchContent` function (on `CMa
 # How to use
 Create a new geode project (duh) then edit the mod.json file:
 ```json
-...
 "dependencies": {
-	...,
-	{
-		"id": "zwstreak.webview",
-		"version": ">=0.0.1",
-		"required": true
-	}
+	"zwstreak.webview": ">=v0.0.3"
 }
 ```
 
 After that you can include the API like this:
 ```c++
-#include <Webview.hpp>
+#include <zwstreak.webview/include/Webview.hpp>
 ```
 
 # API Usage

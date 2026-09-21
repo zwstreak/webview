@@ -30,7 +30,12 @@ CCNode* html_transpile_text(DOMNode element) {
 
 void html_post_process_text(Node* node) {
 	CCMenu* wrapper = static_cast<CCMenu*>(node->cocos);
-	CCLabelTTF* label = static_cast<CCLabelTTF*>(getChild(wrapper, 0));
+	CCLabelTTF* label = typeinfo_cast<CCLabelTTF*>(getChild(wrapper, 0));
+	if (label == nullptr) {
+		geode::log::error("html_post_process event (text): label child was not found.");
+		return;
+	}
+
 	label->setFontSize(getFontSize(node->tag) - 4.0f);
 	wrapper->setContentSize(label->getContentSize());
 	label->setPosition({ wrapper->getContentWidth() / 2, wrapper->getContentHeight() / 2 });

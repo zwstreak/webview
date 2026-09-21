@@ -1,3 +1,9 @@
+# v0.0.3
+- Remove test.html from the resources folder
+- API export in mod.json
+- Fix spelling mistake in README
+- Use "typeinfo_cast" instead of "dynamic_cast"
+
 # v0.0.2
 - Alpha release
 - Fix macOS and iOS build issues

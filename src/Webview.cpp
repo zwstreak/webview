@@ -39,8 +39,8 @@ void ZWebview::loadSource(const std::string& source) {
     this->source = source;
 }
 
-bool ZWebview::loadResource(const std::string& resource) {
-    fs::path resources = Mod::get()->getResourcesDir();
+bool ZWebview::loadResource(Mod* callingMod, const std::string& resource) {
+    fs::path resources = callingMod->getResourcesDir();
     Result<std::string> result = file::readString(resources / resource);
     if (!result) {
         return false;

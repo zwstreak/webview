@@ -16,7 +16,7 @@ WebviewButton* WebviewButton::create(ButtonSprite* sprite) {
 }
 
 bool WebviewButton::initMembers(ButtonSprite* sprite) {
-	CCScale9Sprite* bg = dynamic_cast<CCScale9Sprite*>(getChild(sprite, 1));
+	CCScale9Sprite* bg = typeinfo_cast<CCScale9Sprite*>(getChild(sprite, 1));
 	if (bg == nullptr) {
 		geode::log::warn("The background or the label of the button was not found.");
 		return false;
@@ -95,9 +95,9 @@ WebviewButton* html_transpile_button(DOMNode data) {
 // TODO: support <button><p>Hello world</p></button>
 void html_post_process_button(Node* node) {
 	WebviewButton* button = static_cast<WebviewButton*>(node->cocos);
-	CCLabelTTF* label = dynamic_cast<CCLabelTTF*>(button->getChildren()->lastObject());
+	CCLabelTTF* label = typeinfo_cast<CCLabelTTF*>(button->getChildren()->lastObject());
 	if (label == nullptr) {
-		geode::log::debug("found a button element does not have a text node.");
+		geode::log::debug("html_post_process event (button): found a button element does not have a text node.");
 		return;
 	}
 

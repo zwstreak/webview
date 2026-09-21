@@ -5,7 +5,7 @@
 CCNode* getChild(CCNode* parent, unsigned int at) {
 	CCArray* children = parent->getChildren();
 	CCObject* child = children->objectAtIndex(at);
-	return dynamic_cast<CCNode*>(child);
+	return typeinfo_cast<CCNode*>(child);
 }
 
 std::vector<std::string> getClassList(Attributes attributes) {

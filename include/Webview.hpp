@@ -4,9 +4,7 @@
 #include <Geode/cocos/menu_nodes/CCMenu.h>
 using namespace geode::prelude;
 
-#ifdef WEBVIEW_DEBUG_MODE
-    #define WEBVIEW_API
-#elifdef GEODE_IS_WINDOWS
+#ifdef GEODE_IS_WINDOWS
     #ifdef WEBVIEW_EXPORTING
         #define WEBVIEW_API __declspec(dllexport)
     #else
@@ -22,7 +20,7 @@ public:
     static ZWebview* create();
 
     void loadSource(const std::string& source);
-    bool loadResource(const std::string& resource);
+    bool loadResource(Mod* callingMod, const std::string& resource);
     bool run();
 private:
     std::string source;
