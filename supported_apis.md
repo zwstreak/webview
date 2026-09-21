@@ -21,7 +21,7 @@
 ### Console
 * log
 * warn
-* err
+* error
 
 ### Document
 * getElementById
