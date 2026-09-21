@@ -28,7 +28,7 @@ JSValue fn_item(JS_PARAMS) {
 		return JS_NULL;
 	}
 
-	Node* node = engine->nodes->get(holder->data[index]);
+	Node* node = engine->getNodes()->get(holder->data[index]);
 	// TODO: cache NodeID -> Element instead of creating a new one everytime
 	// meaning JS_NewElementFromNode has to accept the NodeID instead of the Node* itself
 	return JS_NewElementFromNode(ctx, node);
@@ -41,7 +41,7 @@ JSValue fn_namedItem(JS_PARAMS) {
 
 	CollectionHolder* holder = GET_COLLECTION();
 	std::string key = getJSString(ctx, argv[0]);
-	std::optional<Node*> match = getMatchFromIDs(holder->data, engine->nodes, [key](Node* node) {
+	std::optional<Node*> match = getMatchFromIDs(holder->data, engine->getNodes(), [key](Node* node) {
 		return node->id == key || node->attributes["name"] == key;
 	});
 
@@ -59,16 +59,17 @@ void HTMLCollection_finalizer(JSRuntime* rt, JSValue val) {
 }
 
 // TODO: support indexing on HTMLCollection (obj[0])
-JSValue JS_NewHTMLCollection(JSContext* ctx, std::vector<NodeID> nodes) {
+JSValue JS_NewHTMLCollection(JSEngine* engine, JSContext* ctx, std::vector<NodeID> nodes) {
 	std::vector<NodeID> sanitized = {};
 	for (auto& id : nodes) {
-		Node* data = JSEngine::get()->nodes->get(id);
+		Node* data = engine->getNodes()->get(id);
 		if (data == nullptr || data->type != DOM_ELEMENT) continue;
 		sanitized.push_back(id);
 	}
 
 	CollectionHolder* holder = new CollectionHolder(sanitized);
 	JSValue collection = CREATE_OBJ_CLASS(collection, holder);
+	JS_SetOpaque(collection, engine);
 	CREATE_FUNCTION(collection, item, fn_item);
 	CREATE_FUNCTION(collection, namedItem, fn_namedItem);
 	CREATE_PROPERTY_R(collection, length);

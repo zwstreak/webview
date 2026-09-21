@@ -5,20 +5,23 @@
 
 class JSEngine {
 public:
-	static JSEngine* get();
-	static WebviewNodes* getNodes();
+	// TODO: move the class IDS to a seperate class
 	static JSClassID element_id;
 	static JSClassID collection_id;
-	WebviewNodes* nodes;
+	static JSClassID document_id;
+	static JSClassID console_id;
+	static JSClassID window_id;
+	static JSClassID engine_id;
 
+	WebviewNodes* getNodes();
 	void execute(std::string script);
 	void init();
 	void free();
 	JSEngine(WebviewNodes* nodes);
 private:
-	static JSEngine* _instance;
 	JSRuntime* runtime;
 	JSContext* ctx;
+	WebviewNodes* _nodes;
 };
 
 #endif

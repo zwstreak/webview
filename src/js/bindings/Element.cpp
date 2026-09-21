@@ -11,13 +11,13 @@
 // children //
 JSValue get_children(JS_PARAMS) {
 	Node* node = GET_NODE();
-	return JS_NewHTMLCollection(ctx, node->childrenNodes);
+	return JS_NewHTMLCollection(engine, ctx, node->childrenNodes);
 }
 
 // innerHTML //
 JSValue get_innerHTML(JS_PARAMS) {
 	Node* node = GET_NODE();
-	std::string html = stringifyHTMLChildren(node->childrenNodes);
+	std::string html = stringifyHTMLChildren(engine, node->childrenNodes);
 	return JS_NewString(ctx, html.c_str());
 }
 
@@ -30,7 +30,7 @@ JSValue set_innerHTML(JS_PARAMS) {
 
 	std::string html = getJSString(ctx, argv[0]);
 	std::vector<DOMNode> data = HTMLParser::parseFragment(html);
-	engine->nodes->clearChildrenNodes(node->childrenNodes);
+	engine->getNodes()->clearChildrenNodes(node->childrenNodes);
 	for (auto& frag : data) {
 		renderer->renderHTMLChild(frag, node->location);
 	}

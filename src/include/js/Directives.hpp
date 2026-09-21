@@ -1,3 +1,6 @@
+#define GET_ENGINE() static_cast<JSEngine*>(JS_GetOpaque(this_val, JSEngine::engine_id)); \
+	if (engine == nullptr) { return JS_ThrowTypeError(ctx, "could not get the JS engine."); }
+
 #define ATOM_RW_FLAGS (JS_PROP_HAS_GET | JS_PROP_HAS_SET | JS_PROP_WRITABLE)
 #define ATOM_R_FLAGS (JS_PROP_HAS_GET)
 
@@ -23,5 +26,4 @@
 
 #define GET_OPAQUE(obj, name, cast) static_cast<cast>(JS_GetOpaque(this_val, JSEngine::obj##_id)); \
 	if (name == nullptr) { return JS_ThrowTypeError(ctx, "expected a '" #name "' object"); } \
-	JSEngine* engine = JSEngine::get(); \
-	if (engine == nullptr) { return JS_ThrowTypeError(ctx, "could not get the JS engine."); }
+	JSEngine* engine = GET_ENGINE()

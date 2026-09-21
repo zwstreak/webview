@@ -10,6 +10,6 @@ struct CollectionHolder {
 };
 
 void HTMLCollection_finalizer(JSRuntime* rt, JSValue val);
-JSValue JS_NewHTMLCollection(JSContext* ctx, std::vector<NodeID> nodes);
+JSValue JS_NewHTMLCollection(JSEngine* engine, JSContext* ctx, std::vector<NodeID> nodes);
 
 #endif

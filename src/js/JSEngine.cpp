@@ -4,13 +4,13 @@
 
 JSClassID JSEngine::element_id = 0;
 JSClassID JSEngine::collection_id = 0;
-JSEngine* JSEngine::_instance = nullptr;
-JSEngine* JSEngine::get() {
-	return JSEngine::_instance;
-}
+JSClassID JSEngine::document_id = 0;
+JSClassID JSEngine::engine_id = 0;
+JSClassID JSEngine::window_id = 0;
+JSClassID JSEngine::console_id = 0;
 
 WebviewNodes* JSEngine::getNodes() {
-	return JSEngine::get()->nodes;
+	return this->_nodes;
 }
 
 void JSEngine::execute(std::string script) {
@@ -30,6 +30,10 @@ void JSEngine::init() {
 	this->ctx = JS_NewContext(runtime);
 
 	JSClassDef element_def = { .class_name = "Element" };
+	JSClassDef document_def = { .class_name = "Document" };
+	JSClassDef console_def = { .class_name = "Console" };
+	JSClassDef window_def = { .class_name = "Window" };
+	JSClassDef engine_def = { .class_name = "JSEngine" };
 	JSClassDef collection_def = { 
 		.class_name = "HTMLCollection",
 		.finalizer = HTMLCollection_finalizer
@@ -37,26 +41,28 @@ void JSEngine::init() {
 
 	JS_NewClassID(this->runtime, &JSEngine::element_id);
 	JS_NewClassID(this->runtime, &JSEngine::collection_id);
+	JS_NewClassID(this->runtime, &JSEngine::engine_id);
+	JS_NewClassID(this->runtime, &JSEngine::document_id);
+	JS_NewClassID(this->runtime, &JSEngine::window_id);
+	JS_NewClassID(this->runtime, &JSEngine::console_id);
+
 	JS_NewClass(this->runtime, JSEngine::element_id, &element_def);
 	JS_NewClass(this->runtime, JSEngine::collection_id, &collection_def);
+	JS_NewClass(this->runtime, JSEngine::engine_id, &engine_def);
+	JS_NewClass(this->runtime, JSEngine::document_id, &document_def);
+	JS_NewClass(this->runtime, JSEngine::window_id, &window_def);
+	JS_NewClass(this->runtime, JSEngine::console_id, &console_def);
 
-	JSHooks::registerHooks(this->ctx);
+	JSHooks::registerHooks(this, this->ctx);
 }
 
 void JSEngine::free() {
 	JS_FreeContext(this->ctx);
 	JS_FreeRuntime(this->runtime);
-	JSEngine::_instance = nullptr;
 	delete this;
 }
 
 JSEngine::JSEngine(WebviewNodes* nodes) {
-	if (JSEngine::_instance != nullptr) {
-		geode::log::error("instance of JSEngine already exists.");
-		return;
-	}
-
-	JSEngine::_instance = this;
-	this->nodes = nodes;
+	this->_nodes = nodes;
 	this->init();
 }
