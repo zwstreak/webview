@@ -18,8 +18,6 @@ public:
 	static JSClassID element_id;
 	static JSClassID collection_id;
 	static JSClassID document_id;
-	static JSClassID console_id;
-	static JSClassID window_id;
 
 	WebviewNodes* getNodes();
 	WebviewRenderer* getRenderer();

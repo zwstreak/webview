@@ -29,7 +29,7 @@
 
 #define GET_OPAQUE(obj, name, type) nullptr; \
 	JSOpaque* _opaque = static_cast<JSOpaque*>(JS_GetOpaque(this_val, JSEngine::obj##_id)); \
-	if (name == nullptr) { return JS_ThrowTypeError(ctx, "could not get the JS opaque object."); } \
+	if (_opaque == nullptr) { return JS_ThrowTypeError(ctx, "could not get the JS opaque object."); } \
 	JSEngine* engine = _opaque->engine; \
 	name = static_cast<type>(_opaque->data);
 
