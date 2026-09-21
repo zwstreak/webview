@@ -31,7 +31,7 @@ JSValue fn_item(JS_PARAMS) {
 	Node* node = engine->getNodes()->get(holder->data[index]);
 	// TODO: cache NodeID -> Element instead of creating a new one everytime
 	// meaning JS_NewElementFromNode has to accept the NodeID instead of the Node* itself
-	return JS_NewElementFromNode(ctx, node);
+	return JS_NewElementFromNode(engine, ctx, node);
 }
 
 JSValue fn_namedItem(JS_PARAMS) {
@@ -49,11 +49,12 @@ JSValue fn_namedItem(JS_PARAMS) {
 		return JS_NULL;
 	}
 
-	return JS_NewElementFromNode(ctx, match.value());
+	return JS_NewElementFromNode(engine, ctx, match.value());
 }
 
 void HTMLCollection_finalizer(JSRuntime* rt, JSValue val) {
-	CollectionHolder* holder = static_cast<CollectionHolder*>(JS_GetOpaque(val, JSEngine::collection_id));
+	JSOpaque* opaque = static_cast<JSOpaque*>(JS_GetOpaque(val, JSEngine::collection_id));
+	CollectionHolder* holder = static_cast<CollectionHolder*>(opaque->data);
 	if (holder == nullptr) return;
 	delete holder;
 }
@@ -69,7 +70,6 @@ JSValue JS_NewHTMLCollection(JSEngine* engine, JSContext* ctx, std::vector<NodeI
 
 	CollectionHolder* holder = new CollectionHolder(sanitized);
 	JSValue collection = CREATE_OBJ_CLASS(collection, holder);
-	JS_SetOpaque(collection, engine);
 	CREATE_FUNCTION(collection, item, fn_item);
 	CREATE_FUNCTION(collection, namedItem, fn_namedItem);
 	CREATE_PROPERTY_R(collection, length);

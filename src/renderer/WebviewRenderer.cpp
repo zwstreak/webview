@@ -8,7 +8,6 @@
 
 #define TITLEBAR_HEIGHT 14
 
-WebviewRenderer* WebviewRenderer::instance = nullptr;
 void addBackground(CCNode* parent, float yPos, ccColor3B color = {255,255,255}) {
 	CCSprite* bg = CCSprite::create("background.png"_spr);
 	bg->setColor(color);
@@ -98,6 +97,10 @@ Node* WebviewRenderer::renderHTMLChild(DOMNode child, NodeID parentId) {
 	return rendered;
 }
 
+WebviewNodes* WebviewRenderer::getNodes() {
+	return this->nodes;
+}
+
 void WebviewRenderer::renderHTML(std::vector<DOMNode> body, NodeID parentId) {
 	for (auto& child : body) {
 		this->renderHTMLChild(child, parentId);
@@ -129,10 +132,6 @@ void WebviewRenderer::executeJS(std::vector<DOMNode> data) {
 	}
 }
 
-// execute head tag scripts
-// render HTML
-// apply CSS styles
-// execute body tag scripts
 void WebviewRenderer::render(HTMLResult data) {
 	this->addTitlebar(data.head);
 	this->executeJS(data.head);
@@ -141,11 +140,6 @@ void WebviewRenderer::render(HTMLResult data) {
 
 // hehe fancy
 WebviewRenderer* WebviewRenderer::create(ZWebview* target) {
-	if (WebviewRenderer::instance != nullptr) {
-		geode::log::error("instance of WebView renderer already exists.");
-		return nullptr;
-	}
-
 	// UI //
 	auto container = CCMenu::create();
 	container->setContentSize(target->getContentSize());
@@ -163,20 +157,14 @@ WebviewRenderer* WebviewRenderer::create(ZWebview* target) {
 	auto ptr = new WebviewRenderer();
 	ptr->scope = new WebviewScope(content);
 	ptr->nodes = new WebviewNodes();
-	ptr->js = new JSEngine(ptr->nodes);
+	ptr->js = new JSEngine(ptr);
 	ptr->webview = target;
-	WebviewRenderer::instance = ptr;
 
 	return ptr;
 }
 
-WebviewRenderer* WebviewRenderer::get() {
-	return WebviewRenderer::instance;
-}
-
-// Note: WebviewRenderer won't be freed until it is closed, meaning this->nodes will exist
+// IMPORTANT NOTE: WebviewRenderer lives until the webview is closed
 void WebviewRenderer::closeAndCleanup() {
-	WebviewRenderer::instance = nullptr;
 	this->webview->removeFromParent();
 	this->js->free();
 	this->nodes->free();

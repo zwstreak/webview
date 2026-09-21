@@ -10,7 +10,7 @@ JSValue JS_HOOK_DOCUMENT(getElementById) {
 		return JS_ThrowTypeError(ctx, "expected \"id\" argument.");
 	}
 
-	JSEngine* engine = GET_ENGINE();
+	JSEngine* engine = GET_ENGINE(document, engine);
 	std::string id = getJSString(ctx, argv[0]);
 	std::optional<Node*> optNode = engine->getNodes()->getById(id);
 	if (optNode == std::nullopt) {
@@ -18,7 +18,7 @@ JSValue JS_HOOK_DOCUMENT(getElementById) {
 	}
 
 	Node* node = optNode.value();
-	return JS_NewElementFromNode(ctx, node);
+	return JS_NewElementFromNode(engine, ctx, node);
 }
 
 JSValue JS_HOOK_DOCUMENT(getElementsByClassName) {
@@ -26,7 +26,7 @@ JSValue JS_HOOK_DOCUMENT(getElementsByClassName) {
 		return JS_ThrowTypeError(ctx, "expected \"names\" argument.");
 	}
 
-	JSEngine* engine = GET_ENGINE();
+	JSEngine* engine = GET_ENGINE(document, engine);
 	std::string names = getJSString(ctx, argv[0]);
 	std::vector<Node*> nodes = engine->getNodes()->getByClassName(names);
 	std::vector<NodeID> ids = {};
@@ -42,7 +42,7 @@ JSValue JS_HOOK_DOCUMENT(getElementsByTagName) {
 		return JS_ThrowTypeError(ctx, "expected \"tag\" argument.");
 	}
 
-	JSEngine* engine = GET_ENGINE();
+	JSEngine* engine = GET_ENGINE(document, engine);
 	std::string tag = getJSString(ctx, argv[0]);
 	std::vector<Node*> nodes = engine->getNodes()->getByTagName(tag);
 	std::vector<NodeID> ids = {};

@@ -3,6 +3,7 @@
 #include <include/js/hooks/Document.hpp>
 #include <include/js/hooks/Global.hpp>
 #include <include/js/JSEngine.hpp>
+#include <include/js/Directives.hpp>
 
 #define JS_HOOK_FUNC(category, name) JS_NewCFunction(ctx, hooks::category::name, #name, 1)
 
@@ -14,8 +15,7 @@ void JSHooks::registerGlobal(JSEngine* engine, JSContext* ctx) {
 
 void JSHooks::registerDocument(JSEngine* engine, JSContext* ctx) {
 	JSValue global = JS_GetGlobalObject(ctx);
-	JSValue document = JS_NewObjectClass(ctx, JSEngine::document_id);
-	JS_SetOpaque(document, engine);
+	JSValue document = CREATE_OBJ_CLASS(document, engine);
 	JS_SetPropertyStr(ctx, document, "getElementById", JS_HOOK_FUNC(document, getElementById));
 	JS_SetPropertyStr(ctx, document, "getElementsByClassName", JS_HOOK_FUNC(document, getElementsByClassName));
 	JS_SetPropertyStr(ctx, document, "getElementsByTagName", JS_HOOK_FUNC(document, getElementsByTagName));
@@ -25,8 +25,7 @@ void JSHooks::registerDocument(JSEngine* engine, JSContext* ctx) {
 
 void JSHooks::registerWindow(JSEngine* engine, JSContext* ctx) {
 	JSValue global = JS_GetGlobalObject(ctx);
-	JSValue window = JS_NewObjectClass(ctx, JSEngine::window_id);
-	JS_SetOpaque(window, engine);
+	JSValue window = JS_NewObject(ctx);
 	JS_SetPropertyStr(ctx, window, "document", JS_GetPropertyStr(ctx, global, "document"));
 	JS_SetPropertyStr(ctx, global, "window", window);
 	JS_FreeValue(ctx, global);
@@ -34,8 +33,7 @@ void JSHooks::registerWindow(JSEngine* engine, JSContext* ctx) {
 
 void JSHooks::registerConsole(JSEngine* engine, JSContext* ctx) {
 	JSValue global = JS_GetGlobalObject(ctx);
-	JSValue console = JS_NewObjectClass(ctx, JSEngine::console_id);
-	JS_SetOpaque(console, engine);
+	JSValue console = JS_NewObject(ctx);
 	JS_SetPropertyStr(ctx, console, "log", JS_HOOK_FUNC(console, log));
 	JS_SetPropertyStr(ctx, console, "warn", JS_HOOK_FUNC(console, warn));
 	JS_SetPropertyStr(ctx, console, "error", JS_HOOK_FUNC(console, error));
